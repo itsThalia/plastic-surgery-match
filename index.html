@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plastic Surgery Residency Match Predictor</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              cu: {
+                black: '#000000',
+                gold: '#CFB87C',
+                goldlight: '#F3Ebd6',
+                gray: '#333333'
+              },
+              wisc: {
+                red: '#c5050c'
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            /* Fallback pattern if image doesn't load */
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 24px 24px;
+            position: relative;
+        }
+
+        /* Faint Background Image Watermark */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* CU Boulder / Flatirons Silhouette */
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Flatirons_Winter_Sunrise_edit_2.jpg/2560px-Flatirons_Winter_Sunrise_edit_2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.08; /* 8% opacity for watermark effect */
+            z-index: -1;
+            pointer-events: none;
+            filter: grayscale(100%); /* Make it black and white to fit theme */
+        }
+
+        /* Custom Range Slider Styling - Theme Adapted */
+        input[type=range] {
+            -webkit-appearance: none; 
+            width: 100%; 
+            background: transparent; 
+        }
+        
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        /* Webkit Slider Thumb */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #000000; /* Black Thumb */
+            border: 2px solid #CFB87C; /* Gold Border */
+            cursor: pointer;
+            margin-top: -8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.1s ease;
+        }
+        
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #CFB87C; /* Gold on hover */
+            border-color: #000000;
+        }
+
+        /* Webkit Slider Track */
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 2px;
+        }
+
+        /* Firefox Support */
+        input[type=range]::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #000000;
+            border: 2px solid #CFB87C;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 2px;
+        }
+        
+        /* Validation Banner Animation */
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        #validation-banner {
+            animation: slideDown 0.5s ease-out;
+        }
+
+        /* Tab Transitions */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Nav Button Styling - Black & Gold */
+        .nav-btn {
+            transition: all 0.2s ease;
+        }
+        .nav-btn.active {
+            background-color: white;
+            color: #000000;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid #CFB87C; /* Gold border */
+        }
+        .nav-btn:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #000000;
+        }
+        
+        /* Custom Scrollbar for Inputs Container */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1; 
+            border-radius: 20px; 
+        }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex flex-col overflow-hidden selection:bg-cu-gold selection:text-black">
+
+    <!-- Validation Banner -->
+    <div id="validation-banner" class="hidden w-full py-2 px-4 text-center text-sm font-semibold shadow-md z-50">
+        <span id="validation-msg">Initializing Model Validation...</span>
+    </div>
+
+    <div class="flex-grow flex flex-col max-w-[90rem] mx-auto w-full p-6 md:p-8 h-full relative z-10">
+        
+        <!-- Header -->
+        <header class="flex-none mb-8">
+            <div class="flex items-center gap-4">
+                <div>
+                    <h1 class="text-3xl md:text-5xl font-bold text-black tracking-tight">
+                        Plastic Surgery Residency Match Predictor
+                    </h1>
+                    <div class="mt-1">
+                        <p class="text-lg text-cu-gold font-bold uppercase tracking-wide">
+                            University of Colorado <span class="text-black px-1">x</span> <span class="text-wisc-red">University of Wisconsin</span>
+                        </p>
+                        <p class="text-sm text-slate-500 font-medium mt-1">Elastic Net Model Prediction Engine (2026 Edition)</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <div class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-0">
+            
+            <!-- COLUMN 1: SIDEBAR NAVIGATION -->
+            <div class="lg:col-span-2 flex flex-col gap-2 min-h-0">
+                <nav class="flex flex-col gap-2">
+                    <button onclick="switchTab('demographics')" id="btn-demographics" class="nav-btn active text-left px-5 py-4 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-3">
+                        <i class="fa-solid fa-user w-5 text-center"></i> Demographics
+                    </button>
+                    <button onclick="switchTab('education')" id="btn-education" class="nav-btn text-left px-5 py-4 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-3">
+                        <i class="fa-solid fa-graduation-cap w-5 text-center"></i> Education
+                    </button>
+                    <button onclick="switchTab('research')" id="btn-research" class="nav-btn text-left px-5 py-4 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-3">
+                        <i class="fa-solid fa-flask w-5 text-center"></i> Research
+                    </button>
+                    <button onclick="switchTab('lors')" id="btn-lors" class="nav-btn text-left px-5 py-4 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-3">
+                        <i class="fa-solid fa-ranking-star w-5 text-center"></i> Letters & Rank
+                    </button>
+                </nav>
+            </div>
+
+            <!-- COLUMN 2: INPUT CONTENT AREA -->
+            <div class="lg:col-span-6 bg-white rounded-3xl shadow-lg border border-slate-200 flex flex-col overflow-hidden relative">
+                
+                <!-- Scrollable Content -->
+                <div class="flex-grow p-8 md:p-10 overflow-y-auto custom-scrollbar">
+
+                    <!-- TAB 1: Demographics -->
+                    <div id="tab-demographics" class="tab-content active h-full">
+                        <div class="space-y-8">
+                            <div class="border-b border-cu-gold pb-4">
+                                <h2 class="text-2xl font-bold text-black">Demographics</h2>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 gap-8">
+                                <div>
+                                    <label class="block text-base font-semibold text-black mb-3">Gender</label>
+                                    <div class="relative">
+                                        <select id="gender" class="w-full p-4 text-base border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="1.0">Male</option>
+                                            <option value="2.0">Female</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-base font-semibold text-black mb-3">Race</label>
+                                    <div class="relative">
+                                        <select id="is_white" class="w-full p-4 text-base border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="1.0">White</option>
+                                            <option value="0.0">Non-White</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: Education -->
+                    <div id="tab-education" class="tab-content h-full">
+                        <div class="space-y-8"> 
+                            <div class="border-b border-cu-gold pb-4">
+                                <h2 class="text-2xl font-bold text-black">Education & Training</h2>
+                                <p class="text-slate-500 mt-1">Scores, medical school type, and degrees.</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+                                <!-- Step 2 Score -->
+                                <div class="col-span-1 md:col-span-2 text-black bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                                    <label class="flex justify-between text-base font-bold text-black mb-4">
+                                        <span>Step 2 CK Score</span>
+                                        <span class="text-xs font-bold text-black bg-cu-gold px-3 py-1 rounded-full shadow-sm">Mean: 254</span>
+                                    </label>
+                                    <div class="flex items-center gap-6">
+                                        <input type="range" id="step2_score_slider" min="200" max="280" step="1" class="flex-grow h-2">
+                                        <input type="number" id="step2_score_input" class="w-24 p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="200" max="280">
+                                    </div>
+                                </div>
+
+                                <!-- Applicant Type -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-black mb-2">Medical School Type</label>
+                                    <div class="relative">
+                                        <select id="applicant_type" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="1.0">US MD</option>
+                                            <option value="2.0">DO</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- IMG Status -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-black mb-2">IMG Status</label>
+                                    <div class="relative">
+                                        <select id="is_img" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="0.0">US Graduate</option>
+                                            <option value="1.0">International Medical Graduate</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 1 Fail -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-black mb-2">Failed Step 1?</label>
+                                    <div class="relative">
+                                        <select id="fail_step1" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="0.0">No (Passed 1st Attempt)</option>
+                                            <option value="1.0">Yes (Failed)</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Prior Applicant -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-black mb-2">Prior Match Applicant?</label>
+                                    <div class="relative">
+                                        <select id="prior_applicant" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="0.0">No (First Time)</option>
+                                            <option value="1.0">Yes (Re-applicant)</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Grad Degree -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-black mb-2">Additional Grad Degree?</label>
+                                    <div class="relative">
+                                        <select id="grad_degree" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="0.0">No</option>
+                                            <option value="1.0">Yes (PhD, MPH, etc.)</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- AOA -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-black mb-2">AOA Member?</label>
+                                    <div class="relative">
+                                        <select id="aoa_status" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="0.0">No</option>
+                                            <option value="1.0">Yes</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- GHHS -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-black mb-2">Gold Humanism (GHHS)?</label>
+                                    <div class="relative">
+                                        <select id="ghhs_status" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="0.0">No</option>
+                                            <option value="1.0">Yes</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: Research -->
+                    <div id="tab-research" class="tab-content h-full">
+                        <div class="space-y-8">
+                             <div class="border-b border-cu-gold pb-4">
+                                <h2 class="text-2xl font-bold text-black">Research & Output</h2>
+                                <p class="text-slate-500 mt-1">Publications, presentations, and academic productivity.</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 text-black">
+                                <!-- First Author Pubs -->
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="flex justify-between text-base font-bold text-black mb-3">
+                                        <span>First-Author Publications</span>
+                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 3.6</span>
+                                    </label>
+                                    <div class="flex items-center gap-6">
+                                        <input type="range" id="first_author_slider" min="0" max="30" step="1" class="flex-grow h-2">
+                                        <input type="number" id="first_author_input" class="w-24 p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
+                                    </div>
+                                </div>
+
+                                <!-- Total Papers -->
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="flex justify-between text-base font-bold text-black mb-3">
+                                        <span>Total Publications (All types)</span>
+                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 10.1</span>
+                                    </label>
+                                    <div class="flex items-center gap-6">
+                                        <input type="range" id="total_papers_slider" min="0" max="100" step="1" class="flex-grow h-2">
+                                        <input type="number" id="total_papers_input" class="w-24 p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
+                                    </div>
+                                </div>
+
+                                <!-- Oral Presentations -->
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="flex justify-between text-base font-bold text-black mb-3">
+                                        <span>Oral Presentations</span>
+                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 10.6</span>
+                                    </label>
+                                    <div class="flex items-center gap-6">
+                                        <input type="range" id="oral_pres_slider" min="0" max="50" step="1" class="flex-grow h-2">
+                                        <input type="number" id="oral_pres_input" class="w-24 p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
+                                    </div>
+                                </div>
+
+                                <!-- Poster Presentations -->
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="flex justify-between text-base font-bold text-black mb-3">
+                                        <span>Poster Presentations</span>
+                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 8.9</span>
+                                    </label>
+                                    <div class="flex items-center gap-6">
+                                        <input type="range" id="poster_pres_slider" min="0" max="50" step="1" class="flex-grow h-2">
+                                        <input type="number" id="poster_pres_input" class="w-24 p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: LORs & Rankings -->
+                    <div id="tab-lors" class="tab-content h-full">
+                        <div class="space-y-8">
+                            <div class="border-b border-cu-gold pb-4">
+                                <h2 class="text-2xl font-bold text-black">Letters & Rankings</h2>
+                                <p class="text-slate-500 mt-1">Impact factors and program ranks.</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 gap-y-10 text-black">
+                                <!-- Num LORs -->
+                                <div>
+                                    <label class="flex justify-between text-base font-bold text-black mb-3">
+                                        <span>Number of LORs</span>
+                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 3.6</span>
+                                    </label>
+                                    <div class="flex items-center gap-6">
+                                        <input type="range" id="num_lors_slider" min="0" max="10" step="1" class="flex-grow h-2">
+                                        <input type="number" id="num_lors_input" class="w-24 p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
+                                    </div>
+                                </div>
+
+                                <!-- All PRS Author -->
+                                <div>
+                                    <label class="block text-base font-semibold text-black mb-3">Are all letter writers Plastic Surgeons?</label>
+                                    <div class="relative">
+                                        <select id="all_prs_author" class="w-full p-4 text-base text-black border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm">
+                                            <option value="0.0">No</option>
+                                            <option value="1.0">Yes</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Average LOR H-Index -->
+                                <div>
+                                    <label class="flex justify-between text-base font-bold text-black mb-3">
+                                        <span>Average LOR Writer H-Index</span>
+                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 21.0</span>
+                                    </label>
+                                    <div class="flex items-center gap-6">
+                                        <input type="range" id="lor_hindex_slider" min="0" max="100" step="1" class="flex-grow h-2">
+                                        <input type="number" id="lor_hindex_input" class="w-24 p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
+                                    </div>
+                                </div>
+                                
+                                <!-- Rank Percentile -->
+                                <div>
+                                    <label class="flex justify-between text-base font-bold text-black mb-3">
+                                        <span>Average Applicant Rank Percentile</span>
+                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 84.6</span>
+                                    </label>
+                                    <div class="flex items-center gap-6">
+                                        <input type="range" id="rank_percentile_slider" min="0" max="100" step="1" class="flex-grow h-2">
+                                        <input type="number" id="rank_percentile_input" class="w-24 p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0" max="100">
+                                    </div>
+                                </div>
+
+                                <!-- Program Rank -->
+                                <div>
+                                    <label class="flex justify-between text-base font-bold text-black mb-3">
+                                        <span>Average Applicant Program Rank</span>
+                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 2.1</span>
+                                    </label>
+                                    <div class="flex items-center gap-6">
+                                        <input type="range" id="program_rank_slider" min="1" max="5" step="1" class="flex-grow h-2">
+                                        <input type="number" id="program_rank_input" class="w-24 p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="1" max="5">
+                                    </div>
+                                    <!-- Discreet Key -->
+                                    <div class="mt-3 text-xs text-slate-500 italic">
+                                        1 = Rank #1 &nbsp;&bull;&nbsp; 2 = Rank #2-5 &nbsp;&bull;&nbsp; 3 = Rank #5-10 &nbsp;&bull;&nbsp; 4 = Rank #10-20
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 3: RESULTS (Sticky) -->
+            <div class="lg:col-span-4 h-full">
+                <div class="bg-black text-white rounded-3xl shadow-2xl p-8 md:p-10 flex flex-col justify-between h-full border border-cu-gold relative overflow-hidden transition-all hover:shadow-xl hover:shadow-black/50">
+                    
+                    <!-- Background decoration (Subtle Gold Glow) -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-cu-gold rounded-full blur-[100px] opacity-10 -mr-16 -mt-16 pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-cu-gold rounded-full blur-[80px] opacity-10 -ml-16 -mb-16 pointer-events-none"></div>
+
+                    <!-- Chart Section -->
+                    <div class="text-center mt-4">
+                        <h3 class="relative text-cu-gold uppercase text-xs tracking-[0.3em] font-bold mb-8">Match Probability</h3>
+                        
+                        <div class="relative w-64 h-64 mx-auto flex items-center justify-center">
+                            <!-- Circular Progress SVG -->
+                            <svg class="w-full h-full transform -rotate-90 drop-shadow-2xl" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="#333333" stroke-width="5" />
+                                <circle id="prob-circle" cx="50" cy="50" r="45" fill="none" stroke="#CFB87C" stroke-width="5" stroke-dasharray="283" stroke-dashoffset="100" stroke-linecap="round" class="transition-all duration-1000 ease-out" />
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span id="prob-text" class="text-7xl font-bold tracking-tight text-white drop-shadow-lg">0%</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 h-12">
+                            <div id="match-status" class="relative inline-flex items-center px-6 py-2.5 rounded-full text-base font-semibold bg-gray-900 border border-gray-700 backdrop-blur-sm transition-all duration-300">
+                                <span class="w-2.5 h-2.5 rounded-full bg-slate-400 mr-3 animate-pulse"></span>
+                                <span class="status-text text-slate-300">Calculating...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contributions -->
+                    <div class="mt-8 space-y-5">
+                        <h4 class="font-bold text-cu-gold mb-2 text-xs uppercase tracking-wide border-b border-gray-800 pb-3">Key Drivers</h4>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center text-sm group">
+                                <span class="text-slate-400 group-hover:text-white transition-colors">Step 2 Score</span>
+                                <span id="driver-step2" class="font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm group">
+                                <span class="text-slate-400 group-hover:text-white transition-colors">Research</span>
+                                <span id="driver-research" class="font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm group">
+                                <span class="text-slate-400 group-hover:text-white transition-colors">LOR/Rank</span>
+                                <span id="driver-rank" class="font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <div class="mt-auto pt-8 text-[10px] text-slate-500 leading-relaxed text-center opacity-60">
+                        <i class="fa-solid fa-shield-halved mb-1.5 text-xs"></i><br>
+                        Estimates based on historical data. <br>Actual residency outcomes are multifactorial.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODEL LOGIC -->
+    <script>
+        // ---------------------------------------------------------
+        // 1. TAB LOGIC (Updated for Sidebar)
+        // ---------------------------------------------------------
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Remove active state from all buttons
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('active');
+                el.classList.remove('bg-white');
+                el.classList.remove('text-black');
+                el.classList.remove('shadow-sm');
+                el.classList.add('text-slate-500');
+            });
+
+            // Show selected tab content
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            // Set active state on clicked buttons
+            const btn = document.getElementById('btn-' + tabId);
+            if(btn) {
+                btn.classList.add('active');
+                btn.classList.remove('text-slate-500');
+            }
+        }
+
+        // ---------------------------------------------------------
+        // 2. THE EXPORTED MODEL DATA
+        // ---------------------------------------------------------
+        const modelData = {
+          "intercept": -1.1226377986634537,
+          "numeric": {
+            "step2_score": { "median": 254.0, "mean": 253.58279569892474, "scale": 11.163598907662543, "coef": 0.5621434886873581 },
+            "Number_of_First_Author_Publications": { "median": 3.0, "mean": 3.6129032258064515, "scale": 3.7976570537848247, "coef": 0.17452928351381974 },
+            "Total_Papers": { "median": 7.0, "mean": 10.075268817204302, "scale": 9.210368816987819, "coef": 0.12108445530079111 },
+            "Number_of_Poster_Presentations": { "median": 7.0, "mean": 8.89247311827957, "scale": 7.696755866787856, "coef": 0.03606579157830452 },
+            "Number_of_Oral_Presentations": { "median": 7.0, "mean": 10.55483870967742, "scale": 11.00174488730689, "coef": 0.24549516308498323 },
+            "num_lors": { "median": 4.0, "mean": 3.638709677419355, "scale": 0.5512512176495494, "coef": 0.13817193959387558 },
+            "Mean_LOR_Hindex": { "median": 19.5, "mean": 21.016129032696774, "scale": 10.263769330952309, "coef": 0.24469334985106456 },
+            "Mean_Overall_Rank_Percentile": { "median": 86.6666667, "mean": 84.57848746234407, "scale": 10.782669393438594, "coef": 0.28009716927369055 },
+            "Mean_Program_Rank_of_Applicant": { "median": 2.0, "mean": 2.093010752683871, "scale": 0.5638678647060344, "coef": -0.4707776202568166 }
+          },
+          "categorical": {
+            "gender(1=MALE)": { "1.0": -0.18596941061927014, "2.0": 0.16830827621632816 },
+            "WHITE (1=WHITE)": { "0.0": -0.02289002131386848, "1.0": 0.0053329576683151326 },
+            "Race": { "1.0": 0.023465286315893463, "2.0": -0.06469704546950554, "3.0": 0.27787434564282754, "4.0": -0.2543031092406152 },
+            "img": { "0.0": 0.34679372304669165, "1.0": -0.3644548572086041 },
+            "Applicant type (1=USMD, 2=DO, 3=IMG)": { "1.0": 0.42414459066612875, "2.0": -0.44180572410527724 },
+            "AOA (1=yes)": { "0.0": -0.11797473773472042, "1.0": 0.10031360313016052 },
+            "ghhs_status": { "0.0": -0.04728950474307393, "1.0": 0.029629073607195206 },
+            "fail_step1 (1=YES)": { "0.0": 0.0, "1.0": -0.005340419411665551 },
+            "prior_applicant (1=YES)": { "0.0": 0.8046604468331271, "1.0": -0.8223215809796359 },
+            "Additional graduate degrees (yes/no)": { "0.0": 0.11384240158058859, "1.0": -0.13150353584520544 },
+            "All PRS Author": { "0.0": -0.43614062617588284, "1.0": 0.41847949201396484 }
+          }
+        };
+
+        // ---------------------------------------------------------
+        // 3. CONFIGURATION MAP
+        // ---------------------------------------------------------
+        const numericMap = {
+            'step2_score': 'step2_score',
+            'first_author': 'Number_of_First_Author_Publications',
+            'total_papers': 'Total_Papers',
+            'poster_pres': 'Number_of_Poster_Presentations',
+            'oral_pres': 'Number_of_Oral_Presentations',
+            'num_lors': 'num_lors',
+            'lor_hindex': 'Mean_LOR_Hindex',
+            'rank_percentile': 'Mean_Overall_Rank_Percentile',
+            'program_rank': 'Mean_Program_Rank_of_Applicant'
+        };
+
+        const categoricalMap = {
+            'applicant_type': 'Applicant type (1=USMD, 2=DO, 3=IMG)',
+            'is_img': 'img',
+            'fail_step1': 'fail_step1 (1=YES)',
+            'prior_applicant': 'prior_applicant (1=YES)',
+            'grad_degree': 'Additional graduate degrees (yes/no)',
+            'aoa_status': 'AOA (1=yes)',
+            'ghhs_status': 'ghhs_status',
+            'all_prs_author': 'All PRS Author',
+            'gender': 'gender(1=MALE)',
+            'is_white': 'WHITE (1=WHITE)',
+        };
+
+        // ---------------------------------------------------------
+        // 4. CORE CALCULATION LOGIC (Pure Function)
+        // ---------------------------------------------------------
+        function predict(inputs) {
+            let logOdds = modelData.intercept;
+            let contributionLog = {};
+
+            // 1. Process Numerics
+            for (const [key, modelKey] of Object.entries(numericMap)) {
+                let val = 0;
+                if (inputs[key] !== undefined) val = inputs[key];
+                else if (inputs[modelKey] !== undefined) val = inputs[modelKey];
+
+                val = parseFloat(val);
+
+                const params = modelData.numeric[modelKey];
+                const standardized = (val - params.mean) / params.scale;
+                const contribution = standardized * params.coef;
+                
+                logOdds += contribution;
+                contributionLog[key] = contribution;
+            }
+
+            // 2. Process Categoricals
+            for (const [modelKey, catData] of Object.entries(modelData.categorical)) {
+                let inputVal = null;
+                const uiKey = Object.keys(categoricalMap).find(k => categoricalMap[k] === modelKey);
+                
+                if (uiKey && inputs[uiKey] !== undefined) {
+                    inputVal = inputs[uiKey];
+                } else if (inputs[modelKey] !== undefined) {
+                    inputVal = inputs[modelKey];
+                } else if (inputs[modelKey.split('(')[0].trim()] !== undefined) {
+                    inputVal = inputs[modelKey.split('(')[0].trim()];
+                }
+
+                if (inputVal !== null && inputVal !== undefined) {
+                    let lookupKey = inputVal.toString();
+                    if (lookupKey.indexOf('.') === -1 && !isNaN(parseFloat(lookupKey))) {
+                        lookupKey = lookupKey + ".0"; 
+                    }
+                    
+                    if (catData[lookupKey] !== undefined) {
+                        logOdds += catData[lookupKey];
+                    }
+                }
+            }
+
+            // 3. Sigmoid Transform
+            const probability = 1 / (1 + Math.exp(-logOdds));
+            return { probability, contributionLog };
+        }
+
+        // ---------------------------------------------------------
+        // 5. UI HANDLERS
+        // ---------------------------------------------------------
+        
+        function setupSync(baseId, initialVal) {
+            const slider = document.getElementById(baseId + '_slider');
+            const input = document.getElementById(baseId + '_input');
+            
+            if(initialVal !== undefined) {
+                slider.value = initialVal;
+                input.value = initialVal;
+            }
+
+            slider.addEventListener('input', () => {
+                input.value = slider.value;
+                calculate();
+            });
+
+            input.addEventListener('input', () => {
+                let val = parseFloat(input.value);
+                if (val > parseFloat(slider.max)) val = parseFloat(slider.max);
+                slider.value = val;
+                calculate();
+            });
+        }
+
+        function init() {
+            // Setup Numerics
+            setupSync('step2_score', modelData.numeric['step2_score'].median);
+            setupSync('first_author', modelData.numeric['Number_of_First_Author_Publications'].median);
+            setupSync('total_papers', modelData.numeric['Total_Papers'].median);
+            setupSync('poster_pres', modelData.numeric['Number_of_Poster_Presentations'].median);
+            setupSync('oral_pres', modelData.numeric['Number_of_Oral_Presentations'].median);
+            setupSync('num_lors', modelData.numeric['num_lors'].median);
+            setupSync('lor_hindex', modelData.numeric['Mean_LOR_Hindex'].median);
+            setupSync('rank_percentile', modelData.numeric['Mean_Overall_Rank_Percentile'].median);
+            setupSync('program_rank', modelData.numeric['Mean_Program_Rank_of_Applicant'].median);
+
+            // Setup Categoricals
+            for (const id in categoricalMap) {
+                document.getElementById(id).addEventListener('change', calculate);
+            }
+
+            // Run first calculation
+            calculate();
+            
+            // RUN VALIDATION TESTS
+            runValidationTests();
+        }
+
+        function calculate() {
+            // Gather inputs from DOM
+            let inputs = {};
+            
+            for (const id of Object.keys(numericMap)) {
+                inputs[id] = document.getElementById(id + '_input').value;
+            }
+            for (const id of Object.keys(categoricalMap)) {
+                inputs[id] = document.getElementById(id).value;
+            }
+
+            const result = predict(inputs);
+            updateUI(result.probability, result.contributionLog);
+        }
+
+        function updateUI(prob, contribs) {
+            const percentage = (prob * 100).toFixed(1);
+            
+            document.getElementById('prob-text').innerText = percentage + '%';
+            
+            const circle = document.getElementById('prob-circle');
+            const offset = 283 - (283 * prob); 
+            circle.style.strokeDashoffset = offset;
+
+            const statusBox = document.getElementById('match-status');
+            const statusDot = statusBox.querySelector('span'); 
+            const statusText = statusBox.querySelector('.status-text');
+
+            if (prob >= 0.7) {
+                circle.style.stroke = '#4ade80'; 
+                statusBox.className = "relative inline-flex items-center px-6 py-2.5 rounded-full text-base font-semibold bg-green-500/20 text-green-200 border border-green-500/30 backdrop-blur-sm transition-all duration-300";
+                statusDot.className = "w-2.5 h-2.5 rounded-full bg-green-400 mr-3 animate-pulse";
+                statusText.textContent = "Likely Match"; 
+            } else if (prob >= 0.5) {
+                circle.style.stroke = '#facc15'; 
+                statusBox.className = "relative inline-flex items-center px-6 py-2.5 rounded-full text-base font-semibold bg-yellow-500/20 text-yellow-200 border border-yellow-500/30 backdrop-blur-sm transition-all duration-300";
+                statusDot.className = "w-2.5 h-2.5 rounded-full bg-yellow-400 mr-3 animate-pulse";
+                statusText.textContent = "Possible Match";
+            } else {
+                circle.style.stroke = '#f87171'; 
+                statusBox.className = "relative inline-flex items-center px-6 py-2.5 rounded-full text-base font-semibold bg-red-500/20 text-red-200 border border-red-500/30 backdrop-blur-sm transition-all duration-300";
+                statusDot.className = "w-2.5 h-2.5 rounded-full bg-red-400 mr-3 animate-pulse";
+                statusText.textContent = "Unlikely Match";
+            }
+
+            // Drivers
+            document.getElementById('driver-step2').innerText = contribs['step2_score'].toFixed(2);
+            document.getElementById('driver-research').innerText = (contribs['first_author'] + contribs['total_papers'] + contribs['oral_pres']).toFixed(2);
+            document.getElementById('driver-rank').innerText = (contribs['rank_percentile'] + contribs['program_rank']).toFixed(2);
+        }
+
+        // ---------------------------------------------------------
+        // 6. VALIDATION TESTING
+        // ---------------------------------------------------------
+        const testCases = [
+            {
+                inputs: {
+                    "step2_score": 250, "Number_of_First_Author_Publications": 5, "Total_Papers": 10, "Number_of_Poster_Presentations": 8,
+                    "Number_of_Oral_Presentations": 5, "num_lors": 4, "Mean_LOR_Hindex": 20, "Mean_Overall_Rank_Percentile": 85,
+                    "Mean_Program_Rank_of_Applicant": 2, "gender(1=MALE)": 1, "WHITE (1=WHITE)": 1, "Race": 1, "img": 0,
+                    "Applicant type (1=USMD, 2=DO, 3=IMG)": 1, "AOA (1=yes)": 1, "ghhs_status": 1, "fail_step1 (1=YES)": 0,
+                    "prior_applicant (1=YES)": 0, "Additional graduate degrees (yes/no)": 0, "All PRS Author": 1
+                },
+                expected: 0.7041635681723813
+            },
+            {
+                inputs: {
+                    "step2_score": 230, "Number_of_First_Author_Publications": 1, "Total_Papers": 3, "Number_of_Poster_Presentations": 2,
+                    "Number_of_Oral_Presentations": 1, "num_lors": 3, "Mean_LOR_Hindex": 10, "Mean_Overall_Rank_Percentile": 60,
+                    "Mean_Program_Rank_of_Applicant": 4, "gender(1=MALE)": 2, "WHITE (1=WHITE)": 0, "Race": 2, "img": 1,
+                    "Applicant type (1=USMD, 2=DO, 3=IMG)": 3, "AOA (1=yes)": 0, "ghhs_status": 0, "fail_step1 (1=YES)": 1,
+                    "prior_applicant (1=YES)": 1, "Additional graduate degrees (yes/no)": 1, "All PRS Author": 0
+                },
+                expected: 0.0006981305101619823
+            },
+            {
+                inputs: {
+                    "step2_score": 260, "Number_of_First_Author_Publications": 10, "Total_Papers": 25, "Number_of_Poster_Presentations": 15,
+                    "Number_of_Oral_Presentations": 10, "num_lors": 5, "Mean_LOR_Hindex": 30, "Mean_Overall_Rank_Percentile": 95,
+                    "Mean_Program_Rank_of_Applicant": 1, "gender(1=MALE)": 1, "WHITE (1=WHITE)": 1, "Race": 4, "img": 0,
+                    "Applicant type (1=USMD, 2=DO, 3=IMG)": 1, "AOA (1=yes)": 1, "ghhs_status": 0, "fail_step1 (1=YES)": 0,
+                    "prior_applicant (1=YES)": 0, "Additional graduate degrees (yes/no)": 0, "All PRS Author": 1
+                },
+                expected: 0.9597341680248482
+            },
+            {
+                inputs: {
+                    "step2_score": 245, "Number_of_First_Author_Publications": 3, "Total_Papers": 7, "Number_of_Poster_Presentations": 5,
+                    "Number_of_Oral_Presentations": 3, "num_lors": 4, "Mean_LOR_Hindex": 15, "Mean_Overall_Rank_Percentile": 70,
+                    "Mean_Program_Rank_of_Applicant": 3, "gender(1=MALE)": 2, "WHITE (1=WHITE)": 0, "Race": 3, "img": 0,
+                    "Applicant type (1=USMD, 2=DO, 3=IMG)": 2, "AOA (1=yes)": 0, "ghhs_status": 1, "fail_step1 (1=YES)": 0,
+                    "prior_applicant (1=YES)": 1, "Additional graduate degrees (yes/no)": 0, "All PRS Author": 0
+                },
+                expected: 0.019767564196297042
+            },
+            {
+                inputs: {
+                    "step2_score": 255, "Number_of_First_Author_Publications": 7, "Total_Papers": 15, "Number_of_Poster_Presentations": 10,
+                    "Number_of_Oral_Presentations": 7, "num_lors": 4, "Mean_LOR_Hindex": 25, "Mean_Overall_Rank_Percentile": 90,
+                    "Mean_Program_Rank_of_Applicant": 2, "gender(1=MALE)": 1, "WHITE (1=WHITE)": 1, "Race": 1, "img": 0,
+                    "Applicant type (1=USMD, 2=DO, 3=IMG)": 1, "AOA (1=yes)": 1, "ghhs_status": 1, "fail_step1 (1=YES)": 0,
+                    "prior_applicant (1=YES)": 0, "Additional graduate degrees (yes/no)": 0, "All PRS Author": 1
+                },
+                expected: 0.82916367729169
+            }
+        ];
+
+        function runValidationTests() {
+            const banner = document.getElementById('validation-banner');
+            const msg = document.getElementById('validation-msg');
+            let passed = 0;
+            let total = testCases.length;
+            
+            testCases.forEach((test, index) => {
+                const result = predict(test.inputs);
+                const diff = Math.abs(result.probability - test.expected);
+                
+                if (diff < 0.0001) {
+                    passed++;
+                    console.log(`Test ${index + 1} Passed: Calculated ${result.probability.toFixed(6)} matched Expected ${test.expected.toFixed(6)}`);
+                } else {
+                    console.error(`Test ${index + 1} FAILED: Calculated ${result.probability.toFixed(6)} != Expected ${test.expected.toFixed(6)}`);
+                }
+            });
+
+            if (passed === total) {
+                banner.classList.add('hidden');
+            } else {
+                banner.classList.remove('hidden');
+                banner.className = "w-full py-2 px-4 text-center text-sm font-semibold shadow-md z-50 bg-red-100 text-red-800 border-b border-red-200";
+                msg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-2"></i>System Warning: Only ${passed}/${total} validation tests passed. Check console.`;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+
+    </script>
+</body>
+</html>
