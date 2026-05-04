@@ -215,6 +215,26 @@
                 </nav>
             </div>
 
+            <div class="lg:hidden col-span-1 relative -mx-2 sm:mx-0">
+                <div class="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-[#f8fafc] to-transparent z-10 pointer-events-none sm:hidden"></div>
+                <div class="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-[#f8fafc] to-transparent z-10 pointer-events-none sm:hidden"></div>
+                
+                <nav class="flex overflow-x-auto gap-3 pb-2 hide-scrollbar snap-x snap-mandatory scroll-smooth items-center justify-start sm:justify-center px-4 w-full">
+                    <button onclick="switchTab('demographics')" id="mob-btn-demographics" class="mobile-nav-btn active flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
+                        Demographics
+                    </button>
+                    <button onclick="switchTab('education')" id="mob-btn-education" class="mobile-nav-btn flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
+                        Education
+                    </button>
+                    <button onclick="switchTab('research')" id="mob-btn-research" class="mobile-nav-btn flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
+                        Research Productivity
+                    </button>
+                    <button onclick="switchTab('lors')" id="mob-btn-lors" class="mobile-nav-btn flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
+                        Letters of Recommendation
+                    </button>
+                </nav>
+            </div>
+
             <div class="col-span-1 lg:col-span-5 bg-white rounded-3xl shadow-lg border border-slate-200 flex flex-col relative h-full">
                 
                 <div class="p-3 md:p-10 pb-20 md:pb-10">
