@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Plastic Surgery Residency Match Predictor</title>
-    <!-- Tailwind CSS -->
+    <title>Integrated Plastic Surgery Residency Match Predictor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -25,10 +24,13 @@
         }
       }
     </script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        html {
+            font-size: 18px; /* Increases all fonts and spacing proportionally */
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -75,7 +77,7 @@
             background: #000000;
             border: 2px solid #CFB87C;
             cursor: pointer;
-            margin-top: -10px; 
+            margin-top: -9px; /* Adjusted to align with 6px track */
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             transition: transform 0.1s ease;
         }
@@ -88,10 +90,10 @@
         /* Track Styling */
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
-            height: 4px;
+            height: 6px; /* Thicker for better visibility */
             cursor: pointer;
-            background: #e2e8f0;
-            border-radius: 2px;
+            background: #94a3b8; /* Darkened slate color for high visibility */
+            border-radius: 3px;
         }
 
         /* Firefox Support */
@@ -106,10 +108,10 @@
         }
         input[type=range]::-moz-range-track {
             width: 100%;
-            height: 4px;
+            height: 6px; /* Thicker for better visibility */
             cursor: pointer;
-            background: #e2e8f0;
-            border-radius: 2px;
+            background: #94a3b8; /* Darkened slate color for high visibility */
+            border-radius: 3px;
         }
         
         /* Utility: Hide Scrollbar but keep functionality */
@@ -167,90 +169,90 @@
 </head>
 <body class="text-slate-800 h-[100dvh] flex flex-col overflow-hidden selection:bg-cu-gold selection:text-black">
 
-    <!-- Validation Banner -->
-    <div id="validation-banner" class="hidden w-full py-2 px-4 text-center text-sm font-semibold shadow-md z-50">
-        <span id="validation-msg">Initializing Model Validation...</span>
-    </div>
-
-    <!-- Main Container -->
-    <div class="flex-grow flex flex-col max-w-[90rem] mx-auto w-full p-4 md:p-8 h-full relative z-10">
+    <div class="flex-grow flex flex-col max-w-[90rem] mx-auto w-full p-2 md:p-8 h-full relative z-10">
         
-        <!-- Header -->
-        <header class="flex-none mb-4 md:mb-8">
-            <div class="flex items-center gap-4">
-                <div>
-                    <h1 class="text-2xl md:text-5xl font-bold text-black tracking-tight leading-tight">
-                        Plastic Surgery Residency Match Predictor
+        <header class="flex-none mb-2 md:mb-8">
+            <div class="flex items-center justify-center gap-3 sm:gap-6 md:gap-10 lg:gap-12 max-w-6xl mx-auto">
+                <div class="flex-shrink-0">
+                    <img src="data:image/png;base64,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" 
+                         alt="University of Colorado" class="h-10 sm:h-16 md:h-20 lg:h-24 w-auto object-contain">
+                </div>
+                
+                <div class="flex-shrink text-center">
+                    <h1 class="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold text-black tracking-tight leading-tight">
+                        Integrated Plastic Surgery Residency<br class="md:hidden"> Match Predictor
                     </h1>
-                    <div class="mt-2">
-                        <p class="text-sm md:text-lg text-cu-gold font-bold uppercase tracking-wide">
+                    <div class="mt-1 md:mt-2">
+                        <p class="text-xs sm:text-base md:text-lg lg:text-xl text-cu-gold font-bold uppercase tracking-wide">
                             University of Colorado <span class="text-black px-1">x</span> <span class="text-wisc-red">University of Wisconsin</span>
                         </p>
-                        <p class="text-xs md:text-sm text-slate-500 font-medium mt-1">Elastic Net Model Prediction Engine (2026 Edition)</p>
+                        <p class="text-[10px] sm:text-sm md:text-base text-slate-500 font-medium mt-1">Elastic Net Model Prediction Engine (2026)</p>
                     </div>
+                </div>
+
+                <div class="flex-shrink-0">
+                    <img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNTUuNSA4Ny4yOCI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOnVybCgjV2ViX1NoaWVsZF9ibGVuZCk7fS5jbHMtMntmaWxsOiMyODI3Mjg7fS5jbHMtM3tmaWxsOiNjNTA1MGM7fS5jbHMtNHtmaWxsOiNmZmY7fTwvc3R5bGU+PHJhZGlhbEdyYWRpZW50IGlkPSJXZWJfU2hpZWxkX2JsZW5kIiBjeD0iMC44OSIgY3k9IjE3Ljc0IiByPSIzMy40NCIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSgyNy4wNCAyNC43NCkgc2NhbGUoMS4wOSAxLjA5KSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMC4xNyIgc3RvcC1jb2xvcj0iI2ZmZiIvPjxzdG9wIG9mZnNldD0iMC4zIiBzdG9wLWNvbG9yPSIjZjZlZGU0Ii8+PHN0b3Agb2Zmc2V0PSIwLjY5IiBzdG9wLWNvbG9yPSIjZDRhYzdmIi8+PC9yYWRpYWxHcmFkaWVudD48L2RlZnM+PHRpdGxlPmNyZXN0PC90aXRsZT48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yOCw4Ny4zNmEzLjc4LDMuNzgsMCwwLDEtMS4wNS0xLjE2bC0wLjA2LS4wOS0wLjExLDBDOC42NSw4MS44Ni0xLjQ1LDU0LC44MywzMS43MWE0Ny43MSw0Ny43MSwwLDAsMSwxLjI5LTcuMjUsMzUuMzksMzUuMzksMCwwLDEsMi4zMy02LjM5LDIzLjU1LDIzLjU1LDAsMCwxLDMuNzUtNS42NUExNC43LDE0LjcsMCwwLDEsMTksNy4yOCwwLjMzLDAuMzMsMCwwLDAsMTkuMzMsNyw1LjQ5LDUuNDksMCwwLDEsMjMuMjEsNC40bDAuMTksMCwwLS4xOUE0LjY5LDQuNjksMCwwLDEsMjgsLjY0YTQuNzYsNC43NiwwLDAsMSw0LjU2LDMuNTRsMCwwLjE5LDAuMTksMEE1LjUxLDUuNTEsMCwwLDEsMzYuNjcsN2EwLjMyLDAuMzIsMCwwLDAsLjM3LjI2LDE0LjcsMTQuNywwLDAsMSwxMC43Nyw1LjEzLDI0LDI0LDAsMCwxLDQuMjQsNi43MWwwLjIzLDAuNTVhNDIuNTYsNDIuNTYsMCwwLDEsMi44OSwxMkM1Ny40NSw1NCw0Ny4zNSw4MS44NiwyOS4yMyw4Ni4wOGwtMC4xMSwwLTAuMDYuMDlBMy43OCwzLjc4LDAsMCwxLDI4LDg3LjM2WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTAuMjUgLTAuMzYpIi8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNNTUuNDMsMzEuNjhhNDkuNDksNDkuNDksMCwwLDAtLjg2LTUuNSwzOS44MSwzOS44MSwwLDAsMC0xLjM5LTQuOTMsMzEuMjksMzEuMjksMCwwLDAtMi4yMy00LjkzLDIyLjYzLDIyLjYzLDAsMCwwLTMtNC4xQTE0Ljk0LDE0Ljk0LDAsMCwwLDM3LDdIMzYuOTRhNS43Nyw1Ljc3LDAsMCwwLTQuMTYtMi45MSw0LjkzLDQuOTMsMCwwLDAtOS41NiwwQTUuNzcsNS43NywwLDAsMCwxOS4wNiw3SDE5QTE0Ljk0LDE0Ljk0LDAsMCwwLDgsMTIuMjNhMjIuNjMsMjIuNjMsMCwwLDAtMyw0LjEsMzEuMjksMzEuMjksMCwwLDAtMi4yMyw0LjkzLDM5LjgxLDM5LjgxLDAsMCwwLTEuMzksNC45Myw0OS40OSw0OS40OSwwLDAsMC0uODYsNS41Yy0yLjMsMjIuNjIsNy44Nyw1MC40MiwyNi4xNiw1NC42OEEzLjE3LDMuMTcsMCwwLDAsMjgsODcuNjRhMy4xNywzLjE3LDAsMCwwLDEuMjctMS4yOEM0Ny41Niw4Mi4xLDU3LjczLDU0LjMsNTUuNDMsMzEuNjhaTTI4LDEuMjNBMy45LDMuOSwwLDAsMSwzMS45Myw0YTQuODYsNC44NiwwLDAsMC0zLjg2LDIuNDcsMC4xNywwLjE3LDAsMCwxLS4wNy4wOSwwLjE1LDAuMTUsMCwwLDEtLjA3LTAuMDlBNC44Niw0Ljg2LDAsMCwwLDI0LjA3LDQsMy45LDMuOSwwLDAsMSwyOCwxLjIzWk0yNi4xNCw1LjUyYTMuNTEsMy41MSwwLDAsMSwxLjU5LDIuMTFBMC40NiwwLjQ2LDAsMCwwLDI4LDhhMC40NiwwLjQ2LDAsMCwwLC4yNy0wLjQyLDMuNTEsMy41MSwwLDAsMSwxLjU5LTIuMTEsNC4xOSw0LjE5LDAsMCwxLDYsMS41OCwxMy4zOCwxMy4zOCwwLDAsMC0xLjY3LjQyLDYuNiw2LjYsMCwwLDAtMi4zOCwxLjMyLDkuNCw5LjQsMCwwLDAtMyw2LjFjLTAuNjcsNy4zMSw3LjcyLDYuMTYsOC4xNCw2LjEzLDEuMDgsMCwxLjktMS43MSwxLjktNHMtMC44NC00LTEuOS00Yy0wLjY1LDAtMS43Ny41Mi0xLjg4LDIuNTVDMzUsMTcuMSwzNS43LDE5LDM2LjYsMTkuMTFjMC40NywwLjA2Ljg5LS43NiwxLTEuNnMwLjA2LTEuODctLjU5LTJhMC4zOCwwLjM4LDAsMCwwLS40Ni4yOEEzLjgzLDMuODMsMCwwLDEsMzcsMTcuMWMwLDEuMjUtMS4yOC42My0xLjEyLTEuMzZDMzYsMTQsMzYuODksMTQuMDksMzYuOTMsMTQuMDljMC41LDAsMS4yNiwxLDEuMjYsMywwLDEuNzUtLjg0LDMuNjMtMi40NiwyLjY1LTEuMzYtMS0xLjg5LTMuMjgtMS41Mi01LDAuMTctLjgxLjg3LTMsMy4xMy0zLDMuMjYsMCw2LjMsMS43MSw4LjcyLDQuOS0wLjI3Ljg1LTEuOTUsNC4xLTcuMjgsNy4yMWwtMC4yOS4xNWExMSwxMSwwLDAsMC00LjkzLTEsMjcuMDcsMjcuMDcsMCwwLDAtNC42NC43NCw0LjA5LDQuMDksMCwwLDEtLjkyLjE1aDBhNC4wOSw0LjA5LDAsMCwxLS45Mi0wLjE1QTI3LjA3LDI3LjA3LDAsMCwwLDIyLjQ0LDIzYTExLDExLDAsMCwwLTQuOTMsMWwtMC4yOS0uMTVjLTUuMzQtMy4xMS03LTYuMzYtNy4yOC03LjIxLDIuNDItMy4xOSw1LjQ2LTQuOSw4LjcyLTQuOSwyLjI2LDAsMywyLjIxLDMuMTMsMywwLjM4LDEuNzctLjE2LDQuMDUtMS41Miw1LTEuNjEsMS0yLjQ2LS45LTIuNDYtMi42NSwwLTIsLjc2LTMsMS4yNi0zLDAsMCwuOTQtMC4xMSwxLjA5LDEuNjUsMC4xNywyLTEuMDksMi42MS0xLjEyLDEuMzZhMy44MywzLjgzLDAsMCwxLC4zOS0xLjM0QTAuMzgsMC4zOCwwLDAsMCwxOSwxNS40OGMtMC42NS4xNi0uNzEsMS4zLS41OSwyczAuNTYsMS42NiwxLDEuNmMwLjksMC4xMiwxLjYtMiwxLjUyLTMuNDQtMC4xLTItMS4yMy0yLjU1LTEuODgtMi41NS0xLjA2LDAtMS45LDEuNzEtMS45LDRzMC44Miw0LDEuOSw0YzAuNDIsMCw4LjgxLDEuMTgsOC4xNC02LjEzYTkuNCw5LjQsMCwwLDAtMy02LjEsNi42LDYuNiwwLDAsMC0yLjM4LTEuMzJBMTMuMzgsMTMuMzgsMCwwLDAsMjAuMSw3LjEsNC4xOSw0LjE5LDAsMCwxLDI2LjE0LDUuNTJaTTEwLjI4LDM2LjE4QTMyLjQ5LDMyLjQ5LDAsMCwwLDEwLDM5LjQ5YTQ0LjQyLDQ0LjQyLDAsMCwwLDIsMTUuMjUsNDkuNDgsNDkuNDgsMCwwLDAsNC4xMyw5LjMyQTExLjQ4LDExLjQ4LDAsMCwxLDExLDY2LjM5LDY2LjY2LDY2LjY2LDAsMCwxLDQuNTMsMzQuNTcsMTYuMTMsMTYuMTMsMCwwLDAsMTAuMjgsMzYuMThaTTQuNTYsMzRjMC40NC03LjMxLDIuMjktMTMuMDUsNS0xNi44NywwLjQ4LDEuMjQsMi41Nyw0LjM1LDcuMzksNy4xOC00LjEsMi40Ny02LDcuNTYtNi41OCwxMS4zNkExNS44MSwxNS44MSwwLDAsMSw0LjU2LDM0Wk0xNi40MSw2NC41M2MzLjA4LDUuMyw2LjEyLDguNDYsOC40NSwxMC4xM0ExMS41NCwxMS41NCwwLDAsMSwyMS4zMiw3OWMtNC0yLjctNy40LTctMTAuMDctMTIuMTNBMTEuODEsMTEuODEsMCwwLDAsMTYuNDEsNjQuNTNaTTI1LjMzLDc1QTEyLjIsMTIuMiwwLDAsMCwyOCw3Ni40NkExMi4yLDEyLjIsMCwwLDAsMzAuNjcsNzVhMTIsMTIsMCwwLDAsMy41Myw0LjM0LDE4LjY5LDE4LjY5LDAsMCwxLTMuNTgsMS43OHMwLS4wOSwwLTAuMTNjLTAuMjYtMS4zMi0yLTEuNTktMi42MS0xLjU5cy0yLjM1LjI3LTIuNjEsMS41OWMwLDAsMCwuMDksMCwwLjEzYTE4LjY5LDE4LjY5LDAsMCwxLTMuNTgtMS43OEExMiwxMiwwLDAsMCwyNS4zMyw3NVptNS44MS0uMzJjMi4zMy0xLjY3LDUuMzctNC44Myw4LjQ1LTEwLjEzYTExLjgxLDExLjgxLDAsMCwwLDUuMTYsMi4zNkM0Mi4wOCw3MiwzOC42OSw3Ni4zMiwzNC42OCw3OUExMS41NCwxMS41NCwwLDAsMSwzMS4xNCw3NC42NlptOC43Mi0xMC42MUE0OS40OCw0OS40OCwwLDAsMCw0NCw1NC43M2E0NC4xLDQ0LjEsMCwwLDAsMS42Ni03LjMyQTQ0LjM0LDQ0LjM0LDAsMCwwLDQ2LDM5LjQ5YTMyLjQ5LDMyLjQ5LDAsMCwwLS4zMi0zLjMxLDE2LjEzLDE2LjEzLDAsMCwwLDUuNzUtMS42MUE2Ni42Niw2Ni42NiwwLDAsMSw0NSw2Ni4zOSwxMS40OCwxMS40OCwwLDAsMSwzOS44Niw2NC4wNVptNS43OC0yOC40Yy0wLjYyLTMuOC0yLjUtOC44LTYuNTgtMTEuMzYsNC44Mi0yLjgzLDYuOTItNS45NCw3LjM5LTcuMTgsMi42OSwzLjgyLDQuNTUsOS41Niw1LDE2Ljg3QTE1LjgxLDE1LjgxLDAsMCwxLDQ1LjY0LDM1LjY1Wk0yNSw4NC43NmEyMy4yOSwyMy4yOSwwLDAsMS01Ljg3LTIuOTMsMjcuNSwyNy41LDAsMCwxLTMuMjUtMi42MiwzMS4xLDMxLjEsMCwwLDEtMi4zNS0yLjQ3cS0wLjc2LS44OC0xLjQ2LTEuODFhNDcuNDksNDcuNDksMCwwLDEtNS41OC05LjY5QTYzLjksNjMuOSwwLDAsMSwzLjA5LDU1LDcwLjQ2LDcwLjQ2LDAsMCwxLDEuMyw0NC4xOWE2NC41Nyw2NC41NywwLDAsMS0uMDQtMTAuODNjMC4xNi0xLjkzLjM5LTMuODYuNzQtNS43N0EzOS4zMiwzOS4zMiwwLDAsMSwzLjQsMjJhMzEsMzEsMCwwLDEsMi4yMy00LjkzLDIwLjkzLDIwLjkzLDAsMCwxLDMuMTUtNC40NCwxNi4xOSwxNi4xOSwwLDAsMSw0LTMuMSwxMy45MywxMy45MywwLDAsMSwxLjkzLS44N3EwLjUyLTAuMTgsMS0uMzJhOC43Nyw4Ljc3LDAsMCwxLDEtLjI2LDE0LDE0LDAsMCwxLDIuNTYtLjIxLDcuNTgsNy41OCwwLDAsMSwzLjg4LDEsOCw4LDAsMCwxLDMuMzQsNmMwLjQsNC41MS00LjIxLDUuMjItNS4xMSw1LjIyLTAuMTQsMC0wLjIxLS4xMy4yNC0wLjU5YTYuNTMsNi41MywwLDAsMCwxLTUuMWMtMC40NC0yLjA3LTEuOS0zLjY5LTQtMy42OWExMS4xNiwxMS4xNiwwLDAsMC04LjEyLDMuODlBMjIuNzgsMjIuNzgsMCwwLDAsNiwyMi42MSw0Mi42OSw0Mi42OSwwLDAsMCwzLjc2LDM0LDYyLjQzLDYyLjQzLDAsMCwwLDQsNDQuNjMsNjguNzEsNjguNzEsMCwwLDAsNS45NCw1NS4yMmE2MC44Miw2MC44MiwwLDAsMCwzLjUzLDkuODUsNDMuMzYsNDMuMzYsMCwwLDAsNS40OCw5QTI1Ljg5LDI1Ljg5LDAsMCwwLDIzLjA4LDgxYTE4LjE1LDE4LjE1LDAsMCwwLDIuMjEsMUE2LjcxLDYuNzEsMCwwLDAsMjYsODUsNi42Myw2LjYzLDAsMCwxLDI1LDg0Ljc2Wk0yOC4zMSw4Ni4zYTAuNiwwLjYsMCwwLDEtLjMxLjIxLDAuNiwwLjYsMCwwLDEtLjMxLS4yMSw2LjQ5LDYuNDksMCwwLDEtMS41MS01LjE3YzAuMTItMC42NCwxLjItMC45MywxLjgyLTAuOTRzMS43LDAuMywxLjgyLjk0QTYuNDksNi40OSwwLDAsMSwyOC4zMSw4Ni4zWk01NC43LDQ0LjE5QTcwLjQ2LDcwLjQ2LDAsMCwxLDUyLjkxLDU1YTYzLjksNjMuOSwwLDAsMS0zLjQyLDEwLjIsNDcuNDksNDcuNDksMCwwLDEtNS41OCw5LjY5cS0wLjcuOTMtMS40NiwxLjgxYTMxLjEsMzEuMSwwLDAsMS0yLjM1LDIuNDcsMjcuNSwyNy41LDAsMCwxLTMuMjUsMi42MkEyMy4yOSwyMy4yOSwwLDAsMSwzMSw4NC43Niw2LjYzLDYuNjMsMCwwLDEsMzAsODUsNi43MSw2LjcxLDAsMCwwLDMwLjY3LDgxLjksMTguMTUsMTguMTUsMCwwLDAsMzIuODgsODFhMjUuODksMjUuODksMCwwLDAsOC4xMy02Ljg3LDQzLjM2LDQzLjM2LDAsMCwwLDUuNDgtOSw2MC44Miw2MC44MiwwLDAsMCwzLjUzLTkuODVBNjguNzEsNjguNzEsMCwwLDAsNTIsNDQuNjMsNjIuNDMsNjIuNDMsMCwwLDAsNTIuMjQsMzQsNDIuNjksNDIuNjksMCwwLDAsNTAsMjIuNjFhMjIuNzgsMjIuNzgsMCwwLDAtNC40Ny03Ljg3LDExLjE2LDExLjE2LDAsMCwwLTguMTItMy44OWMtMi4xMiwwLTMuNTgsMS42Mi00LDMuNjlhNi41Myw2LjUzLDAsMCwwLDEsNS4xYzAuNDUsMC40Ni4zOCwwLjU5LjI0LDAuNTktMC45LDAtNS41MS0uNzEtNS4xMS01LjIyYTgsOCwwLDAsMSwzLjM0LTYsNy41OCw3LjU4LDAsMCwxLDMuODgtMSwxNCwxNCwwLDAsMSwyLjU2LjIxLDguNzcsOC43NywwLDAsMSwxLC4yNnEwLjUyLDAuMTQsMSwuMzJhMTMuOTMsMTMuOTMsMCwwLDEsMS45My44NywxNi4xOSwxNi4xOSwwLDAsMSw0LDMuMSwyMC45MywyMC45MywwLDAsMSwzLjE1LDQuNDQsMzEsMzEsMCwwLDEsMi4yMyw0LjkzQTM5LjMyLDM5LjMyLDAsMCwxLDU0LDI3LjU5YzAuMzUsMS45MS41OCwzLjg0Ljc0LDUuNzdBNjQuNTcsNjQuNTcsMCwwLDEsNTQuNyw0NC4xOVoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0wLjI1IC0wLjM2KSIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTQ1LDM5LjYzYy0wLjExLTIuNjktLjktMTAuOS02LjQ4LTE0LjQ2QTkuNDEsOS40MSwwLDAsMCwzNC4xOCwyNGMtMi43NC0uMTgtNC43Ny44Ny02LjE0LDAuOTFIMjhjLTEuMzcsMC0zLjQyLTEuMDktNi4xNi0uOTFhOS4zNSw5LjM1LDAsMCwwLTQuMzcsMS4yMUMxMS44NSwyOC43MywxMS4wNywzNi45NCwxMSwzOS42M2E0My41Miw0My41MiwwLDAsMCwzLjU0LDE5QzE4LjM2LDY3LjEyLDIzLDczLjE0LDI3LjYzLDc1LjE5TDI4LDc1LjM1bDAuMzctLjE2YzQuNjEtMiw5LjI3LTguMDYsMTMuMTQtMTYuNTdBNDMuNTMsNDMuNTMsMCwwLDAsNDUsMzkuNjNaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMC4yNSAtMC4zNikiLz48cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik0zNi4zLDMzLjE4VjM1TDM2LjY3LDM1aDAuMThhMS4xNywxLjE3LDAsMCwxLC44Mi4yOCwxLjI3LDEuMjcsMCwwLDEsLjIxLDEuMTFzLTMuNzQsMTYuMTktNC40NSwxOS4yN2MtMC44Mi0zLjktNS4yNi0yNS4xOC01LjI2LTI1LjE4bDAtLjA5SDI3LjI3djAuMUwyMy40LDU1LjMyLDE5LDM2LjM3YTIuNywyLjcsMCwwLDEsMC0uMjgsMS4yNywxLjI3LDAsMCwxLC4zMS0xQTEsMSwwLDAsMSwyMCwzNC45MmwwLjM3LDB2LTEuOEgxNC4xM3YxLjc2bDAuMjgsMGExLjE2LDEuMTYsMCwwLDEsLjk1LjgzTDIzLDY4LjQ4bDAsMC4wOWgxLjF2LTAuMWwzLjU2LTIzLjMsNC41MywyMy4zMSwwLDAuMDloMWw3LjI1LTMyLjc4YTEsMSwwLDAsMSwxLS43NWgwLjA3bDAuMzYsMFYzMy4xOEgzNi4zWiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTAuMjUgLTAuMzYpIi8+PC9zdmc+" 
+                         alt="University of Wisconsin" class="h-10 sm:h-16 md:h-20 lg:h-24 w-auto object-contain">
                 </div>
             </div>
         </header>
 
-        <!-- Main Grid Layout -->
         <div class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 pb-20 lg:pb-0">
             
-            <!-- COLUMN 1: SIDEBAR NAVIGATION (Desktop) -->
-            <div class="hidden lg:flex lg:col-span-2 flex-col gap-2 min-h-0">
+            <div class="hidden lg:flex lg:col-span-3 flex-col gap-2 min-h-0">
                 <nav class="flex flex-col gap-2">
-                    <button onclick="switchTab('demographics')" id="btn-demographics" class="nav-btn active text-left px-5 py-4 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-3">
-                        <i class="fa-solid fa-user w-5 text-center"></i> Demographics
+                    <button onclick="switchTab('demographics')" id="btn-demographics" class="nav-btn active text-left px-6 py-5 rounded-xl text-base font-bold text-slate-500 flex items-center gap-3">
+                        <i class="fa-solid fa-user w-5 flex-shrink-0 text-center"></i> <span class="leading-tight">Demographics</span>
                     </button>
-                    <button onclick="switchTab('education')" id="btn-education" class="nav-btn text-left px-5 py-4 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-3">
-                        <i class="fa-solid fa-graduation-cap w-5 text-center"></i> Education
+                    <button onclick="switchTab('education')" id="btn-education" class="nav-btn text-left px-6 py-5 rounded-xl text-base font-bold text-slate-500 flex items-center gap-3">
+                        <i class="fa-solid fa-graduation-cap w-5 flex-shrink-0 text-center"></i> <span class="leading-tight">Education</span>
                     </button>
-                    <button onclick="switchTab('research')" id="btn-research" class="nav-btn text-left px-5 py-4 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-3">
-                        <i class="fa-solid fa-flask w-5 text-center"></i> Research
+                    <button onclick="switchTab('research')" id="btn-research" class="nav-btn text-left px-6 py-5 rounded-xl text-base font-bold text-slate-500 flex items-center gap-3">
+                        <i class="fa-solid fa-flask w-5 flex-shrink-0 text-center"></i> <span class="leading-tight">Research Productivity</span>
                     </button>
-                    <button onclick="switchTab('lors')" id="btn-lors" class="nav-btn text-left px-5 py-4 rounded-xl text-sm font-bold text-slate-500 flex items-center gap-3">
-                        <i class="fa-solid fa-ranking-star w-5 text-center"></i> Letters & Rank
+                    <button onclick="switchTab('lors')" id="btn-lors" class="nav-btn text-left px-6 py-5 rounded-xl text-base font-bold text-slate-500 flex items-center gap-3">
+                        <i class="fa-solid fa-ranking-star w-5 flex-shrink-0 text-center"></i> <span class="leading-tight">Letters of Recommendation</span>
                     </button>
                 </nav>
             </div>
 
-            <!-- MOBILE NAV (Horizontal Scroll) -->
-            <div class="lg:hidden col-span-1">
-                <nav class="flex overflow-x-auto gap-3 pb-2 hide-scrollbar">
-                    <button onclick="switchTab('demographics')" id="mob-btn-demographics" class="mobile-nav-btn active flex-none px-4 py-2 rounded-full text-sm font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap">
+            <div class="lg:hidden col-span-1 relative -mx-2 sm:mx-0">
+                <div class="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-[#f8fafc] to-transparent z-10 pointer-events-none sm:hidden"></div>
+                <div class="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-[#f8fafc] to-transparent z-10 pointer-events-none sm:hidden"></div>
+                
+                <nav class="flex overflow-x-auto gap-3 pb-2 hide-scrollbar snap-x snap-mandatory scroll-smooth items-center justify-start sm:justify-center px-4 w-full">
+                    <button onclick="switchTab('demographics')" id="mob-btn-demographics" class="mobile-nav-btn active flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
                         Demographics
                     </button>
-                    <button onclick="switchTab('education')" id="mob-btn-education" class="mobile-nav-btn flex-none px-4 py-2 rounded-full text-sm font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap">
+                    <button onclick="switchTab('education')" id="mob-btn-education" class="mobile-nav-btn flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
                         Education
                     </button>
-                    <button onclick="switchTab('research')" id="mob-btn-research" class="mobile-nav-btn flex-none px-4 py-2 rounded-full text-sm font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap">
-                        Research
+                    <button onclick="switchTab('research')" id="mob-btn-research" class="mobile-nav-btn flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
+                        Research Productivity
                     </button>
-                    <button onclick="switchTab('lors')" id="mob-btn-lors" class="mobile-nav-btn flex-none px-4 py-2 rounded-full text-sm font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap">
-                        Letters & Rank
+                    <button onclick="switchTab('lors')" id="mob-btn-lors" class="mobile-nav-btn flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
+                        Letters of Recommendation
                     </button>
                 </nav>
             </div>
 
-            <!-- COLUMN 2: INPUT CONTENT AREA -->
-            <div class="col-span-1 lg:col-span-6 bg-white rounded-3xl shadow-lg border border-slate-200 flex flex-col overflow-hidden relative h-full">
+            <div class="col-span-1 lg:col-span-5 bg-white rounded-3xl shadow-lg border border-slate-200 flex flex-col overflow-hidden relative h-full">
                 
-                <!-- Scrollable Content -->
-                <div class="flex-grow p-5 md:p-10 overflow-y-auto custom-scrollbar pb-24 md:pb-10">
+                <div class="flex-grow p-3 md:p-10 overflow-y-auto custom-scrollbar pb-20 md:pb-10">
 
-                    <!-- TAB 1: Demographics -->
                     <div id="tab-demographics" class="tab-content active h-full">
-                        <div class="space-y-8">
-                            <div class="border-b border-cu-gold pb-4">
-                                <h2 class="text-xl md:text-2xl font-bold text-black">Demographics</h2>
+                        <div class="space-y-4 md:space-y-8">
+                            <div class="border-b border-cu-gold pb-2 md:pb-4">
+                                <h2 class="text-lg md:text-2xl font-bold text-black">Demographics</h2>
                             </div>
                             
-                            <div class="grid grid-cols-1 gap-6 md:gap-8">
+                            <div class="grid grid-cols-1 gap-4 md:gap-8">
                                 <div>
-                                    <label class="block text-base font-semibold text-black mb-3">Gender</label>
+                                    <label class="block text-xs md:text-base font-semibold text-black mb-1 md:mb-3">Gender</label>
                                     <div class="relative">
-                                        <select id="gender" class="w-full p-4 text-base border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
-                                            <option value="1.0">Male</option>
-                                            <option value="2.0">Female</option>
+                                        <select id="gender" class="w-full py-1.5 px-2 md:p-4 text-xs md:text-base border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -259,11 +261,16 @@
                                 </div>
                                 
                                 <div>
-                                    <label class="block text-base font-semibold text-black mb-3">Race</label>
+                                    <label class="block text-xs md:text-base font-semibold text-black mb-1 md:mb-3">Race / Ethnicity</label>
                                     <div class="relative">
-                                        <select id="is_white" class="w-full p-4 text-base border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
-                                            <option value="1.0">White</option>
-                                            <option value="0.0">Non-White</option>
+                                        <select id="race" class="w-full py-1.5 px-2 md:p-4 text-xs md:text-base border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="Asian">Asian</option>
+                                            <option value="Black">Black</option>
+                                            <option value="Hispanic">Hispanic / Latino</option>
+                                            <option value="Middle Eastern">Middle Eastern</option>
+                                            <option value="Multiracial">Multiracial</option>
+                                            <option value="White" selected>White</option>
+                                            <option value="Other">Other / Unknown</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -274,34 +281,31 @@
                         </div>
                     </div>
 
-                    <!-- TAB 2: Education -->
                     <div id="tab-education" class="tab-content h-full">
-                        <div class="space-y-8"> 
-                            <div class="border-b border-cu-gold pb-4">
-                                <h2 class="text-xl md:text-2xl font-bold text-black">Education & Training</h2>
-                                <p class="text-sm md:text-base text-slate-500 mt-1">Scores, medical school type, and degrees.</p>
+                        <div class="space-y-4 md:space-y-8"> 
+                            <div class="border-b border-cu-gold pb-2 md:pb-4">
+                                <h2 class="text-lg md:text-2xl font-bold text-black">Education & Training</h2>
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-                                <!-- Step 2 Score -->
-                                <div class="col-span-1 md:col-span-2 text-black bg-slate-50 p-6 rounded-2xl border border-slate-200">
-                                    <label class="flex justify-between text-base font-bold text-black mb-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4 md:gap-y-8">
+                                <div class="col-span-1 md:col-span-2 text-black bg-slate-50 p-4 md:p-6 rounded-2xl border border-slate-200">
+                                    <label class="flex justify-between text-xs md:text-base font-bold text-black mb-2 md:mb-4">
                                         <span>Step 2 CK Score</span>
-                                        <span class="text-xs font-bold text-black bg-cu-gold px-3 py-1 rounded-full shadow-sm">Mean: 254</span>
+                                        <span class="text-[10px] md:text-xs font-bold text-black bg-cu-gold px-2 md:px-3 py-0.5 md:py-1 rounded-full shadow-sm">Mean: 254</span>
                                     </label>
-                                    <div class="flex items-center gap-6">
+                                    <div class="flex items-center flex-row-reverse md:flex-row gap-3 md:gap-6">
                                         <input type="range" id="step2_score_slider" min="200" max="280" step="1" class="flex-grow h-2">
-                                        <input type="number" id="step2_score_input" class="w-20 md:w-24 p-2 md:p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="200" max="280">
+                                        <input type="number" id="step2_score_input" class="w-16 md:w-24 py-1 px-2 md:p-3 text-sm md:text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="200" max="280">
                                     </div>
                                 </div>
 
-                                <!-- Applicant Type -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-black mb-2">Medical School Type</label>
+                                    <label class="block text-xs md:text-sm font-semibold text-black mb-1 md:mb-2">Applicant Type</label>
                                     <div class="relative">
-                                        <select id="applicant_type" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
-                                            <option value="1.0">US MD</option>
-                                            <option value="2.0">DO</option>
+                                        <select id="applicant_type" class="w-full py-1.5 px-2 md:p-3.5 text-xs md:text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="MD">US MD</option>
+                                            <option value="DO">DO</option>
+                                            <option value="IMG">IMG</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -309,13 +313,12 @@
                                     </div>
                                 </div>
 
-                                <!-- IMG Status -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-black mb-2">IMG Status</label>
+                                    <label class="block text-xs md:text-sm font-semibold text-black mb-1 md:mb-2">Home PRS Program?</label>
                                     <div class="relative">
-                                        <select id="is_img" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
-                                            <option value="0.0">US Graduate</option>
-                                            <option value="1.0">International Medical Graduate</option>
+                                        <select id="home_program" class="w-full py-1.5 px-2 md:p-3.5 text-xs md:text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="No">No</option>
+                                            <option value="Yes">Yes</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -323,13 +326,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Step 1 Fail -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-black mb-2">Failed Step 1?</label>
+                                    <label class="block text-xs md:text-sm font-semibold text-black mb-1 md:mb-2">Failed Step 1?</label>
                                     <div class="relative">
-                                        <select id="fail_step1" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
-                                            <option value="0.0">No (Passed 1st Attempt)</option>
-                                            <option value="1.0">Yes (Failed)</option>
+                                        <select id="fail_step1" class="w-full py-1.5 px-2 md:p-3.5 text-xs md:text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="No">No (Passed 1st Attempt)</option>
+                                            <option value="Yes">Yes (Failed)</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -337,13 +339,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Prior Applicant -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-black mb-2">Prior Match Applicant?</label>
+                                    <label class="block text-xs md:text-sm font-semibold text-black mb-1 md:mb-2">Prior Match Applicant?</label>
                                     <div class="relative">
-                                        <select id="prior_applicant" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
-                                            <option value="0.0">No (First Time)</option>
-                                            <option value="1.0">Yes (Re-applicant)</option>
+                                        <select id="prior_applicant" class="w-full py-1.5 px-2 md:p-3.5 text-xs md:text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="No">No (First Time)</option>
+                                            <option value="Yes">Yes (Re-applicant)</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -351,13 +352,18 @@
                                     </div>
                                 </div>
 
-                                <!-- Grad Degree -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-black mb-2">Additional Grad Degree?</label>
+                                    <label class="block text-xs md:text-sm font-semibold text-black mb-1 md:mb-2">Additional Grad Degree?</label>
                                     <div class="relative">
-                                        <select id="grad_degree" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
-                                            <option value="0.0">No</option>
-                                            <option value="1.0">Yes (PhD, MPH, etc.)</option>
+                                        <select id="grad_degree" class="w-full py-1.5 px-2 md:p-3.5 text-xs md:text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="None">None</option>
+                                            <option value="Master">Master's (Other)</option>
+                                            <option value="MPH">MPH</option>
+                                            <option value="MBA">MBA</option>
+                                            <option value="MBA_MPH">MBA + MPH</option>
+                                            <option value="PhD">PhD</option>
+                                            <option value="Master_PhD">Master's + PhD</option>
+                                            <option value="DPT">DPT</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -365,13 +371,12 @@
                                     </div>
                                 </div>
 
-                                <!-- AOA -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-black mb-2">AOA Member?</label>
+                                    <label class="block text-xs md:text-sm font-semibold text-black mb-1 md:mb-2">AOA Member?</label>
                                     <div class="relative">
-                                        <select id="aoa_status" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
-                                            <option value="0.0">No</option>
-                                            <option value="1.0">Yes</option>
+                                        <select id="aoa_status" class="w-full py-1.5 px-2 md:p-3.5 text-xs md:text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="No">No</option>
+                                            <option value="Yes">Yes</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -379,13 +384,12 @@
                                     </div>
                                 </div>
                                 
-                                <!-- GHHS -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-black mb-2">Gold Humanism (GHHS)?</label>
+                                    <label class="block text-xs md:text-sm font-semibold text-black mb-1 md:mb-2">Gold Humanism (GHHS)?</label>
                                     <div class="relative">
-                                        <select id="ghhs_status" class="w-full p-3.5 text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
-                                            <option value="0.0">No</option>
-                                            <option value="1.0">Yes</option>
+                                        <select id="ghhs_status" class="w-full py-1.5 px-2 md:p-3.5 text-xs md:text-sm border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="No">No</option>
+                                            <option value="Yes">Yes</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -396,94 +400,19 @@
                         </div>
                     </div>
 
-                    <!-- TAB 3: Research -->
                     <div id="tab-research" class="tab-content h-full">
-                        <div class="space-y-8">
-                             <div class="border-b border-cu-gold pb-4">
-                                <h2 class="text-xl md:text-2xl font-bold text-black">Research & Output</h2>
-                                <p class="text-sm md:text-base text-slate-500 mt-1">Publications, presentations, and academic productivity.</p>
+                        <div class="space-y-4 md:space-y-8">
+                             <div class="border-b border-cu-gold pb-2 md:pb-4">
+                                <h2 class="text-lg md:text-2xl font-bold text-black">Research Productivity</h2>
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 text-black">
-                                <!-- First Author Pubs -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 md:gap-y-10 text-black">
                                 <div class="col-span-1 md:col-span-2">
-                                    <label class="flex justify-between text-base font-bold text-black mb-3">
-                                        <span>First-Author Publications</span>
-                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 3.6</span>
-                                    </label>
-                                    <div class="flex items-center gap-6">
-                                        <input type="range" id="first_author_slider" min="0" max="30" step="1" class="flex-grow h-2">
-                                        <input type="number" id="first_author_input" class="w-20 md:w-24 p-2 md:p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
-                                    </div>
-                                </div>
-
-                                <!-- Total Papers -->
-                                <div class="col-span-1 md:col-span-2">
-                                    <label class="flex justify-between text-base font-bold text-black mb-3">
-                                        <span>Total Publications (All types)</span>
-                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 10.1</span>
-                                    </label>
-                                    <div class="flex items-center gap-6">
-                                        <input type="range" id="total_papers_slider" min="0" max="100" step="1" class="flex-grow h-2">
-                                        <input type="number" id="total_papers_input" class="w-20 md:w-24 p-2 md:p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
-                                    </div>
-                                </div>
-
-                                <!-- Oral Presentations -->
-                                <div class="col-span-1 md:col-span-2">
-                                    <label class="flex justify-between text-base font-bold text-black mb-3">
-                                        <span>Oral Presentations</span>
-                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 10.6</span>
-                                    </label>
-                                    <div class="flex items-center gap-6">
-                                        <input type="range" id="oral_pres_slider" min="0" max="50" step="1" class="flex-grow h-2">
-                                        <input type="number" id="oral_pres_input" class="w-20 md:w-24 p-2 md:p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
-                                    </div>
-                                </div>
-
-                                <!-- Poster Presentations -->
-                                <div class="col-span-1 md:col-span-2">
-                                    <label class="flex justify-between text-base font-bold text-black mb-3">
-                                        <span>Poster Presentations</span>
-                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 8.9</span>
-                                    </label>
-                                    <div class="flex items-center gap-6">
-                                        <input type="range" id="poster_pres_slider" min="0" max="50" step="1" class="flex-grow h-2">
-                                        <input type="number" id="poster_pres_input" class="w-20 md:w-24 p-2 md:p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- TAB 4: LORs & Rankings -->
-                    <div id="tab-lors" class="tab-content h-full">
-                        <div class="space-y-8">
-                            <div class="border-b border-cu-gold pb-4">
-                                <h2 class="text-xl md:text-2xl font-bold text-black">Letters & Rankings</h2>
-                                <p class="text-sm md:text-base text-slate-500 mt-1">Impact factors and program ranks.</p>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 gap-y-10 text-black">
-                                <!-- Num LORs -->
-                                <div>
-                                    <label class="flex justify-between text-base font-bold text-black mb-3">
-                                        <span>Number of LORs</span>
-                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 3.6</span>
-                                    </label>
-                                    <div class="flex items-center gap-6">
-                                        <input type="range" id="num_lors_slider" min="0" max="10" step="1" class="flex-grow h-2">
-                                        <input type="number" id="num_lors_input" class="w-20 md:w-24 p-2 md:p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
-                                    </div>
-                                </div>
-
-                                <!-- All PRS Author -->
-                                <div>
-                                    <label class="block text-base font-semibold text-black mb-3">Are all letter writers Plastic Surgeons?</label>
+                                    <label class="block text-xs md:text-base font-bold text-black mb-1 md:mb-3">Dedicated Research Year?</label>
                                     <div class="relative">
-                                        <select id="all_prs_author" class="w-full p-4 text-base text-black border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm">
-                                            <option value="0.0">No</option>
-                                            <option value="1.0">Yes</option>
+                                        <select id="research_year" class="w-full py-1.5 px-2 md:p-4 text-xs md:text-base border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm text-black">
+                                            <option value="No">No</option>
+                                            <option value="Yes">Yes</option>
                                         </select>
                                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -491,43 +420,117 @@
                                     </div>
                                 </div>
 
-                                <!-- Average LOR H-Index -->
-                                <div>
-                                    <label class="flex justify-between text-base font-bold text-black mb-3">
-                                        <span>Average LOR Writer H-Index</span>
-                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 21.0</span>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="flex justify-between text-xs md:text-base font-bold text-black mb-1 md:mb-3">
+                                        <span>1st-Author Publications</span>
+                                        <span class="text-[10px] md:text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 3.6</span>
                                     </label>
-                                    <div class="flex items-center gap-6">
-                                        <input type="range" id="lor_hindex_slider" min="0" max="100" step="1" class="flex-grow h-2">
-                                        <input type="number" id="lor_hindex_input" class="w-20 md:w-24 p-2 md:p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
-                                    </div>
-                                </div>
-                                
-                                <!-- Rank Percentile -->
-                                <div>
-                                    <label class="flex justify-between text-base font-bold text-black mb-3">
-                                        <span>Average Applicant Rank Percentile</span>
-                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 84.6</span>
-                                    </label>
-                                    <div class="flex items-center gap-6">
-                                        <input type="range" id="rank_percentile_slider" min="0" max="100" step="1" class="flex-grow h-2">
-                                        <input type="number" id="rank_percentile_input" class="w-20 md:w-24 p-2 md:p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0" max="100">
+                                    <div class="flex items-center flex-row-reverse md:flex-row gap-3 md:gap-6">
+                                        <input type="range" id="first_author_slider" min="0" max="30" step="1" class="flex-grow h-2">
+                                        <input type="number" id="first_author_input" class="w-16 md:w-24 py-1 px-2 md:p-3 text-sm md:text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
                                     </div>
                                 </div>
 
-                                <!-- Program Rank -->
-                                <div>
-                                    <label class="flex justify-between text-base font-bold text-black mb-3">
-                                        <span>Average Applicant Program Rank</span>
-                                        <span class="text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 2.1</span>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="flex justify-between text-xs md:text-base font-bold text-black mb-1 md:mb-3">
+                                        <span>Non-1st-Author Publications</span>
+                                        <span class="text-[10px] md:text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 6.4</span>
                                     </label>
-                                    <div class="flex items-center gap-6">
-                                        <input type="range" id="program_rank_slider" min="1" max="5" step="1" class="flex-grow h-2">
-                                        <input type="number" id="program_rank_input" class="w-20 md:w-24 p-2 md:p-3 text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="1" max="5">
+                                    <div class="flex items-center flex-row-reverse md:flex-row gap-3 md:gap-6">
+                                        <input type="range" id="non_first_author_slider" min="0" max="100" step="1" class="flex-grow h-2">
+                                        <input type="number" id="non_first_author_input" class="w-16 md:w-24 py-1 px-2 md:p-3 text-sm md:text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
                                     </div>
-                                    <!-- Discreet Key -->
-                                    <div class="mt-3 text-xs text-slate-500 italic">
-                                        1 = Rank #1 &nbsp;&bull;&nbsp; 2 = Rank #2-5 &nbsp;&bull;&nbsp; 3 = Rank #5-10 &nbsp;&bull;&nbsp; 4 = Rank #10-20
+                                </div>
+
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="flex justify-between text-xs md:text-base font-bold text-black mb-1 md:mb-3">
+                                        <span>Oral Presentations</span>
+                                        <span class="text-[10px] md:text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 10.9</span>
+                                    </label>
+                                    <div class="flex items-center flex-row-reverse md:flex-row gap-3 md:gap-6">
+                                        <input type="range" id="oral_pres_slider" min="0" max="50" step="1" class="flex-grow h-2">
+                                        <input type="number" id="oral_pres_input" class="w-16 md:w-24 py-1 px-2 md:p-3 text-sm md:text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
+                                    </div>
+                                </div>
+
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="flex justify-between text-xs md:text-base font-bold text-black mb-1 md:mb-3">
+                                        <span>Poster Presentations</span>
+                                        <span class="text-[10px] md:text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 8.8</span>
+                                    </label>
+                                    <div class="flex items-center flex-row-reverse md:flex-row gap-3 md:gap-6">
+                                        <input type="range" id="poster_pres_slider" min="0" max="50" step="1" class="flex-grow h-2">
+                                        <input type="number" id="poster_pres_input" class="w-16 md:w-24 py-1 px-2 md:p-3 text-sm md:text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-lors" class="tab-content h-full">
+                        <div class="space-y-4 md:space-y-8">
+                            <div class="border-b border-cu-gold pb-2 md:pb-4">
+                                <h2 class="text-lg md:text-2xl font-bold text-black">Letters of Recommendation</h2>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 gap-y-4 md:gap-y-10 text-black">
+                                <div>
+                                    <label class="flex justify-between text-xs md:text-base font-bold text-black mb-1 md:mb-3">
+                                        <span>Number of LORs</span>
+                                        <span class="text-[10px] md:text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 3.6</span>
+                                    </label>
+                                    <div class="flex items-center flex-row-reverse md:flex-row gap-3 md:gap-6">
+                                        <input type="range" id="num_lors_slider" min="0" max="4" step="1" class="flex-grow h-2">
+                                        <input type="number" id="num_lors_input" class="w-16 md:w-24 py-1 px-2 md:p-3 text-sm md:text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0" max="4">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs md:text-base font-semibold text-black mb-1 md:mb-3">Are all letter writers Plastic Surgeons?</label>
+                                    <div class="relative">
+                                        <select id="all_prs_author" class="w-full py-1.5 px-2 md:p-4 text-xs md:text-base text-black border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none appearance-none cursor-pointer transition-all shadow-sm">
+                                            <option value="No">No</option>
+                                            <option value="Yes">Yes</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="flex justify-between text-xs md:text-base font-bold text-black mb-1 md:mb-3">
+                                        <span>Average LOR Writer H-Index</span>
+                                        <span class="text-[10px] md:text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 22.1</span>
+                                    </label>
+                                    <div class="flex items-center flex-row-reverse md:flex-row gap-3 md:gap-6">
+                                        <input type="range" id="lor_hindex_slider" min="0" max="100" step="1" class="flex-grow h-2">
+                                        <input type="number" id="lor_hindex_input" class="w-16 md:w-24 py-1 px-2 md:p-3 text-sm md:text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="flex justify-between text-xs md:text-base font-bold text-black mb-1 md:mb-3">
+                                        <span>Average Applicant Rank Percentile</span>
+                                        <span class="text-[10px] md:text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 84.8</span>
+                                    </label>
+                                    <div class="flex items-center flex-row-reverse md:flex-row gap-3 md:gap-6">
+                                        <input type="range" id="rank_percentile_slider" min="0" max="100" step="1" class="flex-grow h-2">
+                                        <input type="number" id="rank_percentile_input" class="w-16 md:w-24 py-1 px-2 md:p-3 text-sm md:text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="0" max="100">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="flex justify-between text-xs md:text-base font-bold text-black mb-1 md:mb-3">
+                                        <span>Average Applicant Program Rank</span>
+                                        <span class="text-[10px] md:text-xs font-bold text-black bg-cu-gold px-2 py-0.5 rounded">Mean: 2.1</span>
+                                    </label>
+                                    <div class="flex items-center flex-row-reverse md:flex-row gap-3 md:gap-6">
+                                        <input type="range" id="program_rank_slider" min="1" max="5" step="1" class="flex-grow h-2">
+                                        <input type="number" id="program_rank_input" class="w-16 md:w-24 py-1 px-2 md:p-3 text-sm md:text-lg border border-slate-300 rounded-xl text-center font-bold text-black focus:ring-2 focus:ring-cu-gold focus:border-cu-gold outline-none transition-shadow shadow-sm" min="1" max="5">
+                                    </div>
+                                    <div class="mt-2 md:mt-3 text-[10px] md:text-xs text-slate-500 italic">
+                                        1 = Rank #1 &nbsp;&bull;&nbsp; 2 = Rank #2-5 &nbsp;&bull;&nbsp; 3 = Rank #5-10 &nbsp;&bull;&nbsp; 4 = Rank #10-20 &nbsp;&bull;&nbsp; 5 = Rank &gt;20
                                     </div>
                                 </div>
                             </div>
@@ -536,20 +539,16 @@
                 </div>
             </div>
 
-            <!-- COLUMN 3: RESULTS (Desktop Sticky) -->
             <div class="hidden lg:block lg:col-span-4 h-full">
                 <div class="bg-black text-white rounded-3xl shadow-2xl p-8 md:p-10 flex flex-col justify-between h-full border border-cu-gold relative overflow-hidden transition-all hover:shadow-xl hover:shadow-black/50">
                     
-                    <!-- Background decoration (Subtle Gold Glow) -->
                     <div class="absolute top-0 right-0 w-64 h-64 bg-cu-gold rounded-full blur-[100px] opacity-10 -mr-16 -mt-16 pointer-events-none"></div>
                     <div class="absolute bottom-0 left-0 w-48 h-48 bg-cu-gold rounded-full blur-[80px] opacity-10 -ml-16 -mb-16 pointer-events-none"></div>
 
-                    <!-- Chart Section -->
                     <div class="text-center mt-4">
                         <h3 class="relative text-cu-gold uppercase text-xs tracking-[0.3em] font-bold mb-8">Match Probability</h3>
                         
                         <div class="relative w-64 h-64 mx-auto flex items-center justify-center">
-                            <!-- Circular Progress SVG -->
                             <svg class="w-full h-full transform -rotate-90 drop-shadow-2xl" viewBox="0 0 100 100">
                                 <circle cx="50" cy="50" r="45" fill="none" stroke="#333333" stroke-width="5" />
                                 <circle class="prob-circle" cx="50" cy="50" r="45" fill="none" stroke="#CFB87C" stroke-width="5" stroke-dasharray="283" stroke-dashoffset="100" stroke-linecap="round" class="transition-all duration-1000 ease-out" />
@@ -567,26 +566,39 @@
                         </div>
                     </div>
 
-                    <!-- Contributions -->
-                    <div class="mt-8 space-y-5">
-                        <h4 class="font-bold text-cu-gold mb-2 text-xs uppercase tracking-wide border-b border-gray-800 pb-3">Key Drivers</h4>
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center text-sm group">
-                                <span class="text-slate-400 group-hover:text-white transition-colors">Step 2 Score</span>
-                                <span class="driver-step2 font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
+                    <div class="mt-6">
+                        <div class="flex border-b border-gray-800 mb-3 items-end">
+                            <button onclick="switchAnalysisTab('action-plan')" class="btn-action-plan analysis-tab-btn pb-2 text-[10px] md:text-xs uppercase tracking-wide font-bold text-cu-gold border-b-2 border-cu-gold mr-4 md:mr-6 transition-colors">Action Plan</button>
+                            <button onclick="switchAnalysisTab('key-drivers')" class="btn-key-drivers analysis-tab-btn pb-2 text-[10px] md:text-xs uppercase tracking-wide font-bold text-slate-500 hover:text-slate-300 border-b-2 border-transparent transition-colors">Key Drivers</button>
+                        </div>
+                        
+                        <div class="content-action-plan analysis-content">
+                            <div class="flex justify-end mb-2">
+                                <span class="max-potential-badge text-[10px] font-bold px-2 py-0.5 rounded bg-gray-800 text-slate-300 border border-gray-700 hidden"></span>
                             </div>
-                            <div class="flex justify-between items-center text-sm group">
-                                <span class="text-slate-400 group-hover:text-white transition-colors">Research</span>
-                                <span class="driver-research font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
+                            <div class="action-plan-list space-y-2">
+                                <!-- Dynamically injected items -->
                             </div>
-                            <div class="flex justify-between items-center text-sm group">
-                                <span class="text-slate-400 group-hover:text-white transition-colors">LOR/Rank</span>
-                                <span class="driver-rank font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
+                        </div>
+
+                        <div class="content-key-drivers analysis-content hidden">
+                            <div class="space-y-3 pt-1">
+                                <div class="flex justify-between items-center text-sm group">
+                                    <span class="text-slate-400 group-hover:text-white transition-colors">Step 2 Score</span>
+                                    <span class="driver-step2 font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm group">
+                                    <span class="text-slate-400 group-hover:text-white transition-colors">Research</span>
+                                    <span class="driver-research font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm group">
+                                    <span class="text-slate-400 group-hover:text-white transition-colors">LOR/Rank</span>
+                                    <span class="driver-rank font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Disclaimer -->
                     <div class="mt-auto pt-8 text-[10px] text-slate-500 leading-relaxed text-center opacity-60">
                         <i class="fa-solid fa-shield-halved mb-1.5 text-xs"></i><br>
                         Estimates based on historical data. <br>Actual residency outcomes are multifactorial.
@@ -596,71 +608,80 @@
             </div>
         </div>
 
-        <!-- MOBILE FIXED BOTTOM BAR -->
-        <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-black text-white p-4 flex justify-between items-center z-40 border-t-4 border-cu-gold shadow-[0_-5px_15px_rgba(0,0,0,0.3)]">
+        <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-black text-white p-2.5 px-4 flex justify-between items-center z-40 border-t-4 border-cu-gold shadow-[0_-5px_15px_rgba(0,0,0,0.3)]">
            <div>
-              <span class="text-xs text-cu-gold uppercase font-bold tracking-widest">Probability</span>
-              <div class="text-3xl font-bold prob-text leading-none mt-1">0%</div>
+              <span class="text-[10px] sm:text-xs text-cu-gold uppercase font-bold tracking-widest">Probability</span>
+              <div class="text-2xl sm:text-3xl font-bold prob-text leading-none mt-0.5 sm:mt-1">0%</div>
            </div>
-           <button onclick="toggleMobileModal()" class="bg-gray-800 hover:bg-gray-700 px-5 py-3 rounded-xl text-sm font-bold text-white border border-gray-600 shadow-lg active:scale-95 transition-all flex items-center gap-2">
+           <button onclick="toggleMobileModal()" class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-white border border-gray-600 shadow-lg active:scale-95 transition-all flex items-center gap-2">
               <span>View Analysis</span>
               <i class="fa-solid fa-chart-pie"></i>
            </button>
         </div>
 
-        <!-- MOBILE DETAIL MODAL -->
         <div id="mobile-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex-col justify-end transition-opacity duration-300 opacity-0 pointer-events-none" style="display: flex;">
-            <!-- Modal Content Sheet -->
-           <div class="bg-gray-900 rounded-t-3xl w-full max-h-[90vh] overflow-y-auto relative transform transition-transform duration-300 translate-y-full border-t border-cu-gold shadow-2xl pb-10">
+            <div class="bg-gray-900 rounded-t-3xl w-full max-h-[90vh] overflow-y-auto relative transform transition-transform duration-300 translate-y-full border-t border-cu-gold shadow-2xl pb-6 md:pb-10">
               
-              <!-- Close Button -->
-              <button onclick="toggleMobileModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-gray-800 rounded-full p-2 w-10 h-10 flex items-center justify-center z-10 transition-colors">
-                 <i class="fa-solid fa-xmark fa-lg"></i>
+              <button onclick="toggleMobileModal()" class="absolute top-3 right-3 md:top-4 md:right-4 text-slate-400 hover:text-white bg-gray-800 rounded-full p-2 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center z-10 transition-colors">
+                 <i class="fa-solid fa-xmark md:fa-lg"></i>
               </button>
               
-              <!-- Content Replica -->
-              <div class="p-6 pt-12">
+              <div class="p-4 pt-8 md:p-6 md:pt-12">
                     <div class="text-center">
-                        <h3 class="relative text-cu-gold uppercase text-xs tracking-[0.3em] font-bold mb-6">Match Probability</h3>
+                        <h3 class="relative text-cu-gold uppercase text-[10px] md:text-xs tracking-[0.3em] font-bold mb-3 md:mb-6">Match Probability</h3>
                         
-                        <div class="relative w-48 h-48 mx-auto flex items-center justify-center">
-                            <!-- Circular Progress SVG -->
+                        <div class="relative w-32 h-32 md:w-48 md:h-48 mx-auto flex items-center justify-center">
                             <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                                 <circle cx="50" cy="50" r="45" fill="none" stroke="#333333" stroke-width="5" />
                                 <circle class="prob-circle" cx="50" cy="50" r="45" fill="none" stroke="#CFB87C" stroke-width="5" stroke-dasharray="283" stroke-dashoffset="100" stroke-linecap="round" class="transition-all duration-1000 ease-out" />
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                <span class="prob-text text-5xl font-bold tracking-tight text-white drop-shadow-lg">0%</span>
+                                <span class="prob-text text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-lg">0%</span>
                             </div>
                         </div>
 
-                        <div class="mt-6 mb-8">
-                            <div class="match-status relative inline-flex items-center px-6 py-2.5 rounded-full text-base font-semibold bg-gray-800 border border-gray-700">
-                                <span class="status-dot w-2.5 h-2.5 rounded-full bg-slate-400 mr-3 animate-pulse"></span>
+                        <div class="mt-4 mb-5 md:mt-6 md:mb-8">
+                            <div class="match-status relative inline-flex items-center px-4 py-1.5 md:px-6 md:py-2.5 rounded-full text-sm md:text-base font-semibold bg-gray-800 border border-gray-700">
+                                <span class="status-dot w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-slate-400 mr-2 md:mr-3 animate-pulse"></span>
                                 <span class="status-text text-slate-300">Calculating...</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="space-y-6">
-                        <h4 class="font-bold text-cu-gold mb-2 text-xs uppercase tracking-wide border-b border-gray-800 pb-3">Key Drivers</h4>
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center text-sm group">
-                                <span class="text-slate-400">Step 2 Score</span>
-                                <span class="driver-step2 font-mono font-bold text-white bg-gray-800 px-3 py-1.5 rounded border border-gray-700">--</span>
+                    <div class="mt-6">
+                        <div class="flex border-b border-gray-800 mb-3 items-end">
+                            <button onclick="switchAnalysisTab('action-plan')" class="btn-action-plan analysis-tab-btn pb-2 text-[10px] md:text-xs uppercase tracking-wide font-bold text-cu-gold border-b-2 border-cu-gold mr-4 md:mr-6 transition-colors">Action Plan</button>
+                            <button onclick="switchAnalysisTab('key-drivers')" class="btn-key-drivers analysis-tab-btn pb-2 text-[10px] md:text-xs uppercase tracking-wide font-bold text-slate-500 hover:text-slate-300 border-b-2 border-transparent transition-colors">Key Drivers</button>
+                        </div>
+                        
+                        <div class="content-action-plan analysis-content">
+                            <div class="flex justify-end mb-2">
+                                <span class="max-potential-badge text-[10px] font-bold px-2 py-0.5 rounded bg-gray-800 text-slate-300 border border-gray-700 hidden"></span>
                             </div>
-                            <div class="flex justify-between items-center text-sm group">
-                                <span class="text-slate-400">Research</span>
-                                <span class="driver-research font-mono font-bold text-white bg-gray-800 px-3 py-1.5 rounded border border-gray-700">--</span>
+                            <div class="action-plan-list space-y-2 md:space-y-3">
+                                <!-- Dynamically injected items -->
                             </div>
-                            <div class="flex justify-between items-center text-sm group">
-                                <span class="text-slate-400">LOR/Rank</span>
-                                <span class="driver-rank font-mono font-bold text-white bg-gray-800 px-3 py-1.5 rounded border border-gray-700">--</span>
+                        </div>
+
+                        <div class="content-key-drivers analysis-content hidden">
+                            <div class="space-y-3 pt-1">
+                                <div class="flex justify-between items-center text-xs md:text-sm group">
+                                    <span class="text-slate-400 group-hover:text-white transition-colors">Step 2 Score</span>
+                                    <span class="driver-step2 font-mono font-bold text-white bg-gray-800 px-2 py-1 md:px-3 md:py-1.5 rounded border border-gray-700">--</span>
+                                </div>
+                                <div class="flex justify-between items-center text-xs md:text-sm group">
+                                    <span class="text-slate-400 group-hover:text-white transition-colors">Research</span>
+                                    <span class="driver-research font-mono font-bold text-white bg-gray-800 px-2 py-1 md:px-3 md:py-1.5 rounded border border-gray-700">--</span>
+                                </div>
+                                <div class="flex justify-between items-center text-xs md:text-sm group">
+                                    <span class="text-slate-400 group-hover:text-white transition-colors">LOR/Rank</span>
+                                    <span class="driver-rank font-mono font-bold text-white bg-gray-800 px-2 py-1 md:px-3 md:py-1.5 rounded border border-gray-700">--</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <button onclick="toggleMobileModal()" class="w-full mt-10 bg-cu-gold text-black font-bold py-4 rounded-xl hover:bg-white transition-colors">
+                    <button onclick="toggleMobileModal()" class="w-full mt-6 py-3 md:mt-10 bg-cu-gold text-black font-bold md:py-4 rounded-xl hover:bg-white transition-colors text-sm md:text-base">
                         Back to Predictor
                     </button>
               </div>
@@ -669,7 +690,6 @@
 
     </div>
 
-    <!-- MODEL LOGIC -->
     <script>
         // ---------------------------------------------------------
         // 1. MOBILE LOGIC
@@ -677,18 +697,15 @@
         
         function toggleMobileModal() {
             const modal = document.getElementById('mobile-modal');
-            const sheet = modal.querySelector('div'); // The inner sheet div
+            const sheet = modal.querySelector('div'); 
             
             if (modal.classList.contains('pointer-events-none')) {
-                // Open
                 modal.classList.remove('pointer-events-none');
                 modal.classList.remove('opacity-0');
-                // Small delay to allow display:flex to render before transform
                 setTimeout(() => {
                     sheet.classList.remove('translate-y-full');
                 }, 10);
             } else {
-                // Close
                 sheet.classList.add('translate-y-full');
                 setTimeout(() => {
                     modal.classList.add('opacity-0');
@@ -701,163 +718,163 @@
         // 2. TAB LOGIC (Responsive)
         // ---------------------------------------------------------
         function switchTab(tabId) {
-            // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(el => {
                 el.classList.remove('active');
             });
             
-            // Desktop Sidebar: Remove active states
             document.querySelectorAll('.nav-btn').forEach(el => {
-                el.classList.remove('active');
-                el.classList.remove('bg-white');
-                el.classList.remove('text-black');
-                el.classList.remove('shadow-sm');
+                el.classList.remove('active', 'bg-white', 'text-black', 'shadow-sm');
                 el.classList.add('text-slate-500');
             });
             
-            // Mobile Nav: Remove active states
             document.querySelectorAll('.mobile-nav-btn').forEach(el => {
-                el.classList.remove('active');
-                el.classList.remove('bg-black');
-                el.classList.remove('text-cu-gold');
-                el.classList.remove('border-cu-gold');
+                el.classList.remove('active', 'bg-black', 'text-cu-gold', 'border-cu-gold');
                 el.classList.add('bg-white', 'text-slate-600');
             });
 
-            // Show selected tab content
             document.getElementById('tab-' + tabId).classList.add('active');
             
-            // Set active state on clicked buttons (Desktop)
             const btn = document.getElementById('btn-' + tabId);
             if(btn) {
                 btn.classList.add('active');
                 btn.classList.remove('text-slate-500');
             }
             
-            // Set active state on clicked buttons (Mobile)
             const mobBtn = document.getElementById('mob-btn-' + tabId);
             if(mobBtn) {
                 mobBtn.classList.add('active');
                 mobBtn.classList.remove('bg-white', 'text-slate-600');
+                
+                // Center-Anchor scrolling for mobile tab bar
+                mobBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
         }
 
         // ---------------------------------------------------------
-        // 3. THE EXPORTED MODEL DATA
+        // 3. ANALYSIS PANEL TAB LOGIC
+        // ---------------------------------------------------------
+        function switchAnalysisTab(tabName) {
+            document.querySelectorAll('.analysis-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.analysis-tab-btn').forEach(el => {
+                el.classList.remove('text-cu-gold', 'border-cu-gold');
+                el.classList.add('text-slate-500', 'border-transparent');
+            });
+
+            document.querySelectorAll('.content-' + tabName).forEach(el => el.classList.remove('hidden'));
+            document.querySelectorAll('.btn-' + tabName).forEach(el => {
+                el.classList.add('text-cu-gold', 'border-cu-gold');
+                el.classList.remove('text-slate-500', 'border-transparent');
+            });
+        }
+
+        // ---------------------------------------------------------
+        // 4. THE EXPORTED MODEL DATA
         // ---------------------------------------------------------
         const modelData = {
-          "intercept": -1.1226377986634537,
-          "numeric": {
-            "step2_score": { "median": 254.0, "mean": 253.58279569892474, "scale": 11.163598907662543, "coef": 0.5621434886873581 },
-            "Number_of_First_Author_Publications": { "median": 3.0, "mean": 3.6129032258064515, "scale": 3.7976570537848247, "coef": 0.17452928351381974 },
-            "Total_Papers": { "median": 7.0, "mean": 10.075268817204302, "scale": 9.210368816987819, "coef": 0.12108445530079111 },
-            "Number_of_Poster_Presentations": { "median": 7.0, "mean": 8.89247311827957, "scale": 7.696755866787856, "coef": 0.03606579157830452 },
-            "Number_of_Oral_Presentations": { "median": 7.0, "mean": 10.55483870967742, "scale": 11.00174488730689, "coef": 0.24549516308498323 },
-            "num_lors": { "median": 4.0, "mean": 3.638709677419355, "scale": 0.5512512176495494, "coef": 0.13817193959387558 },
-            "Mean_LOR_Hindex": { "median": 19.5, "mean": 21.016129032696774, "scale": 10.263769330952309, "coef": 0.24469334985106456 },
-            "Mean_Overall_Rank_Percentile": { "median": 86.6666667, "mean": 84.57848746234407, "scale": 10.782669393438594, "coef": 0.28009716927369055 },
-            "Mean_Program_Rank_of_Applicant": { "median": 2.0, "mean": 2.093010752683871, "scale": 0.5638678647060344, "coef": -0.4707776202568166 }
+          intercept: -1.230051,
+          numeric: {
+            'step2_score':       { mean: 253.7744, scale: 12.7428, coef:  0.568300 },
+            'rank_percentile':   { mean: 84.8135,  scale: 11.2341, coef:  0.386218 },
+            'num_lors':          { mean: 3.6051,   scale: 0.5323,  coef:  0.309280 },
+            'non_first_author':  { mean: 6.3778,   scale: 6.7169,  coef:  0.210182 },
+            'lor_hindex':        { mean: 21.9923,  scale: 10.8806, coef:  0.126504 },
+            'first_author':      { mean: 3.6376,   scale: 4.3191,  coef:  0.031040 },
+            'oral_pres':         { mean: 10.8718,  scale: 12.6905, coef:  0.024110 },
+            'poster_pres':       { mean: 8.8325,   scale: 7.5795,  coef: -0.074329 },
+            'program_rank':      { mean: 2.0875,   scale: 0.6124,  coef: -0.509167 }
           },
-          "categorical": {
-            "gender(1=MALE)": { "1.0": -0.18596941061927014, "2.0": 0.16830827621632816 },
-            "WHITE (1=WHITE)": { "0.0": -0.02289002131386848, "1.0": 0.0053329576683151326 },
-            "Race": { "1.0": 0.023465286315893463, "2.0": -0.06469704546950554, "3.0": 0.27787434564282754, "4.0": -0.2543031092406152 },
-            "img": { "0.0": 0.34679372304669165, "1.0": -0.3644548572086041 },
-            "Applicant type (1=USMD, 2=DO, 3=IMG)": { "1.0": 0.42414459066612875, "2.0": -0.44180572410527724 },
-            "AOA (1=yes)": { "0.0": -0.11797473773472042, "1.0": 0.10031360313016052 },
-            "ghhs_status": { "0.0": -0.04728950474307393, "1.0": 0.029629073607195206 },
-            "fail_step1 (1=YES)": { "0.0": 0.0, "1.0": -0.005340419411665551 },
-            "prior_applicant (1=YES)": { "0.0": 0.8046604468331271, "1.0": -0.8223215809796359 },
-            "Additional graduate degrees (yes/no)": { "0.0": 0.11384240158058859, "1.0": -0.13150353584520544 },
-            "All PRS Author": { "0.0": -0.43614062617588284, "1.0": 0.41847949201396484 }
+          categorical: {
+            'gender':         { 'Male': -0.166379, 'Female': 0.006274 },
+            'race':           {
+                                'Asian':          0.211081,
+                                'Multiracial':    0.129619,
+                                'White':          0.024216,
+                                'Hispanic':      -0.038860,
+                                'Other':         -0.123015,
+                                'Black':         -0.152468,
+                                'Middle Eastern':-0.210678
+                              },
+            'applicant_type': { 'MD':  0.701098, 'DO': -0.873527, 'IMG': 0.012324 },
+            'grad_degree':    {
+                                'MBA_MPH':     0.126443,
+                                'DPT':         0.040855,
+                                'MPH':         0.007965,
+                                'None':        0,
+                                'Master':     -0.010410,
+                                'Master_PhD': -0.029446,
+                                'PhD':        -0.088632,
+                                'MBA':        -0.206880
+                              },
+            'research_year':  { 'No': -0.157841, 'Yes': -0.002264 },
+            'home_program':   { 'No': -0.523051, 'Yes':  0.362945 },
+            'aoa_status':     { 'No': -0.374609, 'Yes':  0.214504 },
+            'fail_step1':     { 'No': -0.016004, 'Yes': -0.144101 },
+            'prior_applicant':{ 'No':  1.888581, 'Yes': -2.048686 },
+            'all_prs_author': { 'No': -0.690558, 'Yes':  0.530452 },
+            'ghhs_status':    { 'No': -0.209763, 'Yes':  0.049658 }
           }
         };
 
         // ---------------------------------------------------------
-        // 4. CONFIGURATION MAP
+        // 5. CONFIGURATION MAP
         // ---------------------------------------------------------
         const numericMap = {
             'step2_score': 'step2_score',
-            'first_author': 'Number_of_First_Author_Publications',
-            'total_papers': 'Total_Papers',
-            'poster_pres': 'Number_of_Poster_Presentations',
-            'oral_pres': 'Number_of_Oral_Presentations',
+            'first_author': 'first_author',
+            'non_first_author': 'non_first_author',
+            'poster_pres': 'poster_pres',
+            'oral_pres': 'oral_pres',
             'num_lors': 'num_lors',
-            'lor_hindex': 'Mean_LOR_Hindex',
-            'rank_percentile': 'Mean_Overall_Rank_Percentile',
-            'program_rank': 'Mean_Program_Rank_of_Applicant'
+            'lor_hindex': 'lor_hindex',
+            'rank_percentile': 'rank_percentile',
+            'program_rank': 'program_rank'
         };
 
         const categoricalMap = {
-            'applicant_type': 'Applicant type (1=USMD, 2=DO, 3=IMG)',
-            'is_img': 'img',
-            'fail_step1': 'fail_step1 (1=YES)',
-            'prior_applicant': 'prior_applicant (1=YES)',
-            'grad_degree': 'Additional graduate degrees (yes/no)',
-            'aoa_status': 'AOA (1=yes)',
+            'gender': 'gender',
+            'race': 'race',
+            'applicant_type': 'applicant_type',
+            'home_program': 'home_program',
+            'fail_step1': 'fail_step1',
+            'prior_applicant': 'prior_applicant',
+            'grad_degree': 'grad_degree',
+            'aoa_status': 'aoa_status',
             'ghhs_status': 'ghhs_status',
-            'all_prs_author': 'All PRS Author',
-            'gender': 'gender(1=MALE)',
-            'is_white': 'WHITE (1=WHITE)',
+            'research_year': 'research_year',
+            'all_prs_author': 'all_prs_author'
         };
 
         // ---------------------------------------------------------
-        // 5. CORE CALCULATION LOGIC (Pure Function)
+        // 6. CORE CALCULATION LOGIC
         // ---------------------------------------------------------
         function predict(inputs) {
             let logOdds = modelData.intercept;
-            let contributionLog = {};
+            let contribs = {};
 
-            // 1. Process Numerics
-            for (const [key, modelKey] of Object.entries(numericMap)) {
-                let val = 0;
-                if (inputs[key] !== undefined) val = inputs[key];
-                else if (inputs[modelKey] !== undefined) val = inputs[modelKey];
-
-                val = parseFloat(val);
-
-                const params = modelData.numeric[modelKey];
+            for (const key of Object.keys(numericMap)) {
+                let val = parseFloat(inputs[key] || 0);
+                const params = modelData.numeric[key];
                 const standardized = (val - params.mean) / params.scale;
-                const contribution = standardized * params.coef;
-                
-                logOdds += contribution;
-                contributionLog[key] = contribution;
+                const contrib = standardized * params.coef;
+                logOdds += contrib;
+                contribs[key] = contrib;
             }
 
-            // 2. Process Categoricals
-            for (const [modelKey, catData] of Object.entries(modelData.categorical)) {
-                let inputVal = null;
-                const uiKey = Object.keys(categoricalMap).find(k => categoricalMap[k] === modelKey);
-                
-                if (uiKey && inputs[uiKey] !== undefined) {
-                    inputVal = inputs[uiKey];
-                } else if (inputs[modelKey] !== undefined) {
-                    inputVal = inputs[modelKey];
-                } else if (inputs[modelKey.split('(')[0].trim()] !== undefined) {
-                    inputVal = inputs[modelKey.split('(')[0].trim()];
-                }
-
-                if (inputVal !== null && inputVal !== undefined) {
-                    let lookupKey = inputVal.toString();
-                    if (lookupKey.indexOf('.') === -1 && !isNaN(parseFloat(lookupKey))) {
-                        lookupKey = lookupKey + ".0"; 
-                    }
-                    
-                    if (catData[lookupKey] !== undefined) {
-                        logOdds += catData[lookupKey];
-                    }
-                }
+            for (const key of Object.keys(categoricalMap)) {
+                let valStr = String(inputs[key]);
+                const catData = modelData.categorical[key];
+                let contrib = (valStr in catData) ? catData[valStr] : 0;
+                logOdds += contrib;
+                contribs[key] = contrib;
             }
 
-            // 3. Sigmoid Transform
             const probability = 1 / (1 + Math.exp(-logOdds));
-            return { probability, contributionLog };
+            return { probability, contribs };
         }
 
         // ---------------------------------------------------------
-        // 6. UI HANDLERS (UPDATED FOR MULTI-TARGET CLASSES)
+        // 7. UI HANDLERS 
         // ---------------------------------------------------------
-        
         function setupSync(baseId, initialVal) {
             const slider = document.getElementById(baseId + '_slider');
             const input = document.getElementById(baseId + '_input');
@@ -881,58 +898,203 @@
         }
 
         function init() {
-            // Setup Numerics
-            setupSync('step2_score', modelData.numeric['step2_score'].median);
-            setupSync('first_author', modelData.numeric['Number_of_First_Author_Publications'].median);
-            setupSync('total_papers', modelData.numeric['Total_Papers'].median);
-            setupSync('poster_pres', modelData.numeric['Number_of_Poster_Presentations'].median);
-            setupSync('oral_pres', modelData.numeric['Number_of_Oral_Presentations'].median);
-            setupSync('num_lors', modelData.numeric['num_lors'].median);
-            setupSync('lor_hindex', modelData.numeric['Mean_LOR_Hindex'].median);
-            setupSync('rank_percentile', modelData.numeric['Mean_Overall_Rank_Percentile'].median);
-            setupSync('program_rank', modelData.numeric['Mean_Program_Rank_of_Applicant'].median);
+            setupSync('step2_score', modelData.numeric['step2_score'].mean.toFixed(0));
+            setupSync('first_author', modelData.numeric['first_author'].mean.toFixed(0));
+            setupSync('non_first_author', modelData.numeric['non_first_author'].mean.toFixed(0));
+            setupSync('poster_pres', modelData.numeric['poster_pres'].mean.toFixed(0));
+            setupSync('oral_pres', modelData.numeric['oral_pres'].mean.toFixed(0));
+            setupSync('num_lors', modelData.numeric['num_lors'].mean.toFixed(0));
+            setupSync('lor_hindex', modelData.numeric['lor_hindex'].mean.toFixed(0));
+            setupSync('rank_percentile', modelData.numeric['rank_percentile'].mean.toFixed(0));
+            setupSync('program_rank', modelData.numeric['program_rank'].mean.toFixed(0));
 
-            // Setup Categoricals
-            for (const id in categoricalMap) {
+            const selectIds = Object.keys(categoricalMap);
+            for (const id of selectIds) {
                 document.getElementById(id).addEventListener('change', calculate);
             }
 
-            // Run first calculation
             calculate();
-            
-            // RUN VALIDATION TESTS
-            runValidationTests();
         }
 
         function calculate() {
-            // Gather inputs from DOM
-            let inputs = {};
-            
-            for (const id of Object.keys(numericMap)) {
-                inputs[id] = document.getElementById(id + '_input').value;
-            }
-            for (const id of Object.keys(categoricalMap)) {
-                inputs[id] = document.getElementById(id).value;
-            }
+            let inputs = {
+                'step2_score': document.getElementById('step2_score_input').value,
+                'first_author': document.getElementById('first_author_input').value,
+                'non_first_author': document.getElementById('non_first_author_input').value,
+                'poster_pres': document.getElementById('poster_pres_input').value,
+                'oral_pres': document.getElementById('oral_pres_input').value,
+                'num_lors': document.getElementById('num_lors_input').value,
+                'lor_hindex': document.getElementById('lor_hindex_input').value,
+                'rank_percentile': document.getElementById('rank_percentile_input').value,
+                'program_rank': document.getElementById('program_rank_input').value,
+                
+                'gender': document.getElementById('gender').value,
+                'race': document.getElementById('race').value,
+                'applicant_type': document.getElementById('applicant_type').value,
+                'home_program': document.getElementById('home_program').value,
+                'fail_step1': document.getElementById('fail_step1').value,
+                'prior_applicant': document.getElementById('prior_applicant').value,
+                'grad_degree': document.getElementById('grad_degree').value,
+                'aoa_status': document.getElementById('aoa_status').value,
+                'ghhs_status': document.getElementById('ghhs_status').value,
+                'research_year': document.getElementById('research_year').value,
+                'all_prs_author': document.getElementById('all_prs_author').value
+            };
 
             const result = predict(inputs);
-            updateUI(result.probability, result.contributionLog);
+            updateUI(result.probability, result.contribs, inputs);
         }
 
-        function updateUI(prob, contribs) {
+        const actionsDefinition = [
+            {
+                id: 'step2',
+                condition: (i) => parseFloat(i.step2_score) < 260,
+                apply: (i) => { i.step2_score = Math.min(280, parseFloat(i.step2_score) + 10); return i; },
+                text: "Boost Step 2 Score (+10 pts)"
+            },
+            {
+                id: 'research_yr',
+                condition: (i) => i.research_year === 'No',
+                apply: (i) => { i.research_year = 'Yes'; return i; },
+                text: "Take a Dedicated Research Year"
+            },
+            {
+                id: 'publications',
+                condition: (i) => true,
+                apply: (i) => { i.non_first_author = parseFloat(i.non_first_author) + 3; return i; },
+                text: "Publish 3 additional non-first author papers"
+            },
+            {
+                id: 'first_author_pubs',
+                condition: (i) => true,
+                apply: (i) => { i.first_author = parseFloat(i.first_author) + 3; return i; },
+                text: "Publish 3 additional first-author papers"
+            },
+            {
+                id: 'lor_prs',
+                condition: (i) => i.all_prs_author === 'No',
+                apply: (i) => { i.all_prs_author = 'Yes'; return i; },
+                text: "Ensure all LORs are from Plastic Surgeons"
+            },
+            {
+                id: 'lor_hindex',
+                condition: (i) => parseFloat(i.lor_hindex) < 40,
+                apply: (i) => { i.lor_hindex = Math.min(100, parseFloat(i.lor_hindex) + 15); return i; },
+                text: "Secure LORs from higher H-Index faculty (+15)"
+            },
+            {
+                id: 'add_lor',
+                condition: (i) => parseFloat(i.num_lors) < 4,
+                apply: (i) => { i.num_lors = Math.min(4, parseFloat(i.num_lors) + 1); return i; },
+                text: "Obtain 1 additional LOR"
+            },
+            {
+                id: 'aoa_induction',
+                condition: (i) => i.aoa_status === 'No',
+                apply: (i) => { i.aoa_status = 'Yes'; return i; },
+                text: "Aim for AOA Honor Society Induction"
+            },
+            {
+                id: 'improve_rank',
+                condition: (i) => parseFloat(i.rank_percentile) < 85,
+                apply: (i) => { i.rank_percentile = Math.min(100, parseFloat(i.rank_percentile) + 15); return i; },
+                text: "Improve Class Rank Percentile (+15%)"
+            }
+        ];
+
+        function calculateMaxPotential(inputs) {
+            let maxI = { ...inputs };
+            maxI.step2_score = 280;
+            maxI.first_author = 30;
+            maxI.non_first_author = 100;
+            maxI.oral_pres = 50;
+            maxI.poster_pres = 0; // Negative coefficient, optimal is 0
+            maxI.num_lors = 4;
+            maxI.lor_hindex = 100;
+            maxI.rank_percentile = 100;
+            maxI.program_rank = 1; // Negative coefficient, optimal is 1
+            maxI.research_year = 'Yes';
+            maxI.all_prs_author = 'Yes';
+            // Note: Immutable fields like race/applicant_type remain as currently selected
+            return predict(maxI).probability;
+        }
+
+        function generateActionPlan(currentProb, inputs) {
+            const actionLists = document.querySelectorAll('.action-plan-list');
+            const badgeEls = document.querySelectorAll('.max-potential-badge');
+            
+            let maxProb = calculateMaxPotential(inputs);
+            let targetAchievable = maxProb >= 0.90;
+
+            badgeEls.forEach(el => {
+                el.classList.remove('hidden');
+                if (targetAchievable) {
+                    el.innerHTML = 'Target: <span class="text-green-400">90% Achievable</span>';
+                } else {
+                    el.innerHTML = `Max Potential: <span class="text-yellow-400">${(maxProb * 100).toFixed(1)}%</span>`;
+                }
+            });
+
+            if (currentProb >= 0.90) {
+                actionLists.forEach(list => {
+                    list.innerHTML = `
+                        <div class="p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-center">
+                            <p class="text-sm text-green-400 font-bold"><i class="fa-solid fa-circle-check mr-2"></i>Target Reached</p>
+                            <p class="text-xs text-slate-300 mt-1 opacity-80">Your profile is highly competitive. Focus on subjective application strengths and interview prep.</p>
+                        </div>
+                    `;
+                });
+                return;
+            }
+
+            let viableActions = [];
+            actionsDefinition.forEach(action => {
+                if (action.condition(inputs)) {
+                    let testInputs = { ...inputs };
+                    testInputs = action.apply(testInputs);
+                    let newProb = predict(testInputs).probability;
+                    let delta = newProb - currentProb;
+                    if (delta > 0.005) { // Filter out negligible gains (<0.5%)
+                        viableActions.push({ text: action.text, delta: delta });
+                    }
+                }
+            });
+
+            // Sort by highest impact
+            viableActions.sort((a, b) => b.delta - a.delta);
+            let topActions = viableActions.slice(0, 3);
+
+            let html = '';
+            if (topActions.length === 0) {
+                html = `<div class="text-xs text-slate-400 text-center italic mt-4">You have maximized actionable metrics. Focus on subjective application strengths.</div>`;
+            } else {
+                topActions.forEach(action => {
+                    html += `
+                        <div class="flex justify-between items-center text-xs md:text-sm group bg-gray-800/60 p-2 md:p-2.5 rounded-lg border border-gray-700/60 transition-all hover:bg-gray-800 hover:border-cu-gold">
+                            <span class="text-slate-300 group-hover:text-white transition-colors flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-cu-gold opacity-70 group-hover:opacity-100"></i>
+                                ${action.text}
+                            </span>
+                            <span class="font-mono font-bold text-green-400 bg-green-400/10 px-1.5 md:px-2 py-0.5 md:py-1 rounded border border-green-400/20 whitespace-nowrap">+${(action.delta * 100).toFixed(1)}%</span>
+                        </div>
+                    `;
+                });
+            }
+
+            actionLists.forEach(list => list.innerHTML = html);
+        }
+
+        function updateUI(prob, contribs, inputs) {
             const percentage = (prob * 100).toFixed(1);
             
-            // Update all probability text elements (Desktop + Mobile + Modal)
             document.querySelectorAll('.prob-text').forEach(el => {
                 el.innerText = percentage + '%';
             });
             
-            // Update Circles
             const offset = 283 - (283 * prob); 
             document.querySelectorAll('.prob-circle').forEach(circle => {
                 circle.style.strokeDashoffset = offset;
                 
-                // Color Logic
                 if (prob >= 0.7) {
                     circle.style.stroke = '#4ade80'; 
                 } else if (prob >= 0.5) {
@@ -942,7 +1104,6 @@
                 }
             });
 
-            // Update Status Boxes
             document.querySelectorAll('.match-status').forEach(box => {
                 const statusDot = box.querySelector('.status-dot');
                 const statusText = box.querySelector('.status-text');
@@ -962,97 +1123,17 @@
                 }
             });
 
-            // Update Drivers (All instances)
-            const updateDriver = (selector, val) => {
-                document.querySelectorAll(selector).forEach(el => el.innerText = val.toFixed(2));
-            };
+            // Calculate Key Drivers
+            const formatDriver = (val) => (val > 0 ? '+' : '') + val.toFixed(2);
+            let researchContrib = contribs['first_author'] + contribs['non_first_author'] + contribs['poster_pres'] + contribs['oral_pres'] + (contribs['research_year'] || 0);
+            let rankContrib = contribs['num_lors'] + contribs['lor_hindex'] + contribs['rank_percentile'] + contribs['program_rank'] + (contribs['all_prs_author'] || 0);
 
-            updateDriver('.driver-step2', contribs['step2_score']);
-            updateDriver('.driver-research', (contribs['first_author'] + contribs['total_papers'] + contribs['oral_pres']));
-            updateDriver('.driver-rank', (contribs['rank_percentile'] + contribs['program_rank']));
-        }
+            document.querySelectorAll('.driver-step2').forEach(el => el.innerText = formatDriver(contribs['step2_score']));
+            document.querySelectorAll('.driver-research').forEach(el => el.innerText = formatDriver(researchContrib));
+            document.querySelectorAll('.driver-rank').forEach(el => el.innerText = formatDriver(rankContrib));
 
-        // ---------------------------------------------------------
-        // 7. VALIDATION TESTING
-        // ---------------------------------------------------------
-        const testCases = [
-            {
-                inputs: {
-                    "step2_score": 250, "Number_of_First_Author_Publications": 5, "Total_Papers": 10, "Number_of_Poster_Presentations": 8,
-                    "Number_of_Oral_Presentations": 5, "num_lors": 4, "Mean_LOR_Hindex": 20, "Mean_Overall_Rank_Percentile": 85,
-                    "Mean_Program_Rank_of_Applicant": 2, "gender(1=MALE)": 1, "WHITE (1=WHITE)": 1, "Race": 1, "img": 0,
-                    "Applicant type (1=USMD, 2=DO, 3=IMG)": 1, "AOA (1=yes)": 1, "ghhs_status": 1, "fail_step1 (1=YES)": 0,
-                    "prior_applicant (1=YES)": 0, "Additional graduate degrees (yes/no)": 0, "All PRS Author": 1
-                },
-                expected: 0.7041635681723813
-            },
-            {
-                inputs: {
-                    "step2_score": 230, "Number_of_First_Author_Publications": 1, "Total_Papers": 3, "Number_of_Poster_Presentations": 2,
-                    "Number_of_Oral_Presentations": 1, "num_lors": 3, "Mean_LOR_Hindex": 10, "Mean_Overall_Rank_Percentile": 60,
-                    "Mean_Program_Rank_of_Applicant": 4, "gender(1=MALE)": 2, "WHITE (1=WHITE)": 0, "Race": 2, "img": 1,
-                    "Applicant type (1=USMD, 2=DO, 3=IMG)": 3, "AOA (1=yes)": 0, "ghhs_status": 0, "fail_step1 (1=YES)": 1,
-                    "prior_applicant (1=YES)": 1, "Additional graduate degrees (yes/no)": 1, "All PRS Author": 0
-                },
-                expected: 0.0006981305101619823
-            },
-            {
-                inputs: {
-                    "step2_score": 260, "Number_of_First_Author_Publications": 10, "Total_Papers": 25, "Number_of_Poster_Presentations": 15,
-                    "Number_of_Oral_Presentations": 10, "num_lors": 5, "Mean_LOR_Hindex": 30, "Mean_Overall_Rank_Percentile": 95,
-                    "Mean_Program_Rank_of_Applicant": 1, "gender(1=MALE)": 1, "WHITE (1=WHITE)": 1, "Race": 4, "img": 0,
-                    "Applicant type (1=USMD, 2=DO, 3=IMG)": 1, "AOA (1=yes)": 1, "ghhs_status": 0, "fail_step1 (1=YES)": 0,
-                    "prior_applicant (1=YES)": 0, "Additional graduate degrees (yes/no)": 0, "All PRS Author": 1
-                },
-                expected: 0.9597341680248482
-            },
-            {
-                inputs: {
-                    "step2_score": 245, "Number_of_First_Author_Publications": 3, "Total_Papers": 7, "Number_of_Poster_Presentations": 5,
-                    "Number_of_Oral_Presentations": 3, "num_lors": 4, "Mean_LOR_Hindex": 15, "Mean_Overall_Rank_Percentile": 70,
-                    "Mean_Program_Rank_of_Applicant": 3, "gender(1=MALE)": 2, "WHITE (1=WHITE)": 0, "Race": 3, "img": 0,
-                    "Applicant type (1=USMD, 2=DO, 3=IMG)": 2, "AOA (1=yes)": 0, "ghhs_status": 1, "fail_step1 (1=YES)": 0,
-                    "prior_applicant (1=YES)": 1, "Additional graduate degrees (yes/no)": 0, "All PRS Author": 0
-                },
-                expected: 0.019767564196297042
-            },
-            {
-                inputs: {
-                    "step2_score": 255, "Number_of_First_Author_Publications": 7, "Total_Papers": 15, "Number_of_Poster_Presentations": 10,
-                    "Number_of_Oral_Presentations": 7, "num_lors": 4, "Mean_LOR_Hindex": 25, "Mean_Overall_Rank_Percentile": 90,
-                    "Mean_Program_Rank_of_Applicant": 2, "gender(1=MALE)": 1, "WHITE (1=WHITE)": 1, "Race": 1, "img": 0,
-                    "Applicant type (1=USMD, 2=DO, 3=IMG)": 1, "AOA (1=yes)": 1, "ghhs_status": 1, "fail_step1 (1=YES)": 0,
-                    "prior_applicant (1=YES)": 0, "Additional graduate degrees (yes/no)": 0, "All PRS Author": 1
-                },
-                expected: 0.82916367729169
-            }
-        ];
-
-        function runValidationTests() {
-            const banner = document.getElementById('validation-banner');
-            const msg = document.getElementById('validation-msg');
-            let passed = 0;
-            let total = testCases.length;
-            
-            testCases.forEach((test, index) => {
-                const result = predict(test.inputs);
-                const diff = Math.abs(result.probability - test.expected);
-                
-                if (diff < 0.0001) {
-                    passed++;
-                    console.log(`Test ${index + 1} Passed: Calculated ${result.probability.toFixed(6)} matched Expected ${test.expected.toFixed(6)}`);
-                } else {
-                    console.error(`Test ${index + 1} FAILED: Calculated ${result.probability.toFixed(6)} != Expected ${test.expected.toFixed(6)}`);
-                }
-            });
-
-            if (passed === total) {
-                banner.classList.add('hidden');
-            } else {
-                banner.classList.remove('hidden');
-                banner.className = "w-full py-2 px-4 text-center text-sm font-semibold shadow-md z-50 bg-red-100 text-red-800 border-b border-red-200";
-                msg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-2"></i>System Warning: Only ${passed}/${total} validation tests passed. Check console.`;
-            }
+            // Generate Action Plan
+            generateActionPlan(prob, inputs);
         }
 
         window.addEventListener('DOMContentLoaded', init);
