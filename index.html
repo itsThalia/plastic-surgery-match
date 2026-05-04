@@ -38,8 +38,7 @@
             background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
             background-size: 24px 24px;
             position: relative;
-            height: 100dvh; /* Dynamic Viewport Height for Mobile */
-            overflow: hidden; /* Prevent body scroll, handle internally */
+            min-height: 100vh;
         }
 
         /* Faint Background Image Watermark */
@@ -167,9 +166,9 @@
         }
     </style>
 </head>
-<body class="text-slate-800 h-[100dvh] flex flex-col overflow-hidden selection:bg-cu-gold selection:text-black">
+<body class="text-slate-800 min-h-screen flex flex-col selection:bg-cu-gold selection:text-black">
 
-    <div class="flex-grow flex flex-col max-w-[90rem] mx-auto w-full p-2 md:p-8 h-full relative z-10">
+    <div class="flex-grow flex flex-col max-w-[90rem] mx-auto w-full p-2 md:p-8 relative z-10">
         
         <header class="flex-none mb-2 md:mb-8">
             <div class="flex items-center justify-center gap-3 sm:gap-6 md:gap-10 lg:gap-12 max-w-6xl mx-auto">
@@ -197,9 +196,9 @@
             </div>
         </header>
 
-        <div class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 pb-20 lg:pb-0">
+        <div class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 pb-20 lg:pb-0">
             
-            <div class="hidden lg:flex lg:col-span-3 flex-col gap-2 min-h-0">
+            <div class="hidden lg:flex lg:col-span-3 flex-col gap-2 sticky top-8 self-start">
                 <nav class="flex flex-col gap-2">
                     <button onclick="switchTab('demographics')" id="btn-demographics" class="nav-btn active text-left px-6 py-5 rounded-xl text-base font-bold text-slate-500 flex items-center gap-3">
                         <i class="fa-solid fa-user w-5 flex-shrink-0 text-center"></i> <span class="leading-tight">Demographics</span>
@@ -216,29 +215,9 @@
                 </nav>
             </div>
 
-            <div class="lg:hidden col-span-1 relative -mx-2 sm:mx-0">
-                <div class="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-[#f8fafc] to-transparent z-10 pointer-events-none sm:hidden"></div>
-                <div class="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-[#f8fafc] to-transparent z-10 pointer-events-none sm:hidden"></div>
+            <div class="col-span-1 lg:col-span-5 bg-white rounded-3xl shadow-lg border border-slate-200 flex flex-col relative">
                 
-                <nav class="flex overflow-x-auto gap-3 pb-2 hide-scrollbar snap-x snap-mandatory scroll-smooth items-center justify-start sm:justify-center px-4 w-full">
-                    <button onclick="switchTab('demographics')" id="mob-btn-demographics" class="mobile-nav-btn active flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
-                        Demographics
-                    </button>
-                    <button onclick="switchTab('education')" id="mob-btn-education" class="mobile-nav-btn flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
-                        Education
-                    </button>
-                    <button onclick="switchTab('research')" id="mob-btn-research" class="mobile-nav-btn flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
-                        Research Productivity
-                    </button>
-                    <button onclick="switchTab('lors')" id="mob-btn-lors" class="mobile-nav-btn flex-none snap-center px-5 py-2.5 rounded-full text-sm sm:text-base font-bold bg-white text-slate-600 border border-slate-200 shadow-sm whitespace-nowrap transition-all duration-300 ease-in-out">
-                        Letters of Recommendation
-                    </button>
-                </nav>
-            </div>
-
-            <div class="col-span-1 lg:col-span-5 bg-white rounded-3xl shadow-lg border border-slate-200 flex flex-col overflow-hidden relative h-full">
-                
-                <div class="flex-grow p-3 md:p-10 overflow-y-auto custom-scrollbar pb-20 md:pb-10">
+                <div class="p-3 md:p-10 pb-20 md:pb-10">
 
                     <div id="tab-demographics" class="tab-content active h-full">
                         <div class="space-y-4 md:space-y-8">
@@ -539,8 +518,8 @@
                 </div>
             </div>
 
-            <div class="hidden lg:block lg:col-span-4 h-full">
-                <div class="bg-black text-white rounded-3xl shadow-2xl p-8 md:p-10 flex flex-col justify-between h-full border border-cu-gold relative overflow-hidden transition-all hover:shadow-xl hover:shadow-black/50">
+            <div class="hidden lg:block lg:col-span-4 sticky top-8 self-start">
+                <div class="bg-black text-white rounded-3xl shadow-2xl p-8 md:p-10 flex flex-col border border-cu-gold relative transition-all hover:shadow-xl hover:shadow-black/50">
                     
                     <div class="absolute top-0 right-0 w-64 h-64 bg-cu-gold rounded-full blur-[100px] opacity-10 -mr-16 -mt-16 pointer-events-none"></div>
                     <div class="absolute bottom-0 left-0 w-48 h-48 bg-cu-gold rounded-full blur-[80px] opacity-10 -ml-16 -mb-16 pointer-events-none"></div>
@@ -566,40 +545,7 @@
                         </div>
                     </div>
 
-                    <div class="mt-6">
-                        <div class="flex border-b border-gray-800 mb-3 items-end">
-                            <button onclick="switchAnalysisTab('action-plan')" class="btn-action-plan analysis-tab-btn pb-2 text-[10px] md:text-xs uppercase tracking-wide font-bold text-cu-gold border-b-2 border-cu-gold mr-4 md:mr-6 transition-colors">Action Plan</button>
-                            <button onclick="switchAnalysisTab('key-drivers')" class="btn-key-drivers analysis-tab-btn pb-2 text-[10px] md:text-xs uppercase tracking-wide font-bold text-slate-500 hover:text-slate-300 border-b-2 border-transparent transition-colors">Key Drivers</button>
-                        </div>
-                        
-                        <div class="content-action-plan analysis-content">
-                            <div class="flex justify-end mb-2">
-                                <span class="max-potential-badge text-[10px] font-bold px-2 py-0.5 rounded bg-gray-800 text-slate-300 border border-gray-700 hidden"></span>
-                            </div>
-                            <div class="action-plan-list space-y-2">
-                                <!-- Dynamically injected items -->
-                            </div>
-                        </div>
-
-                        <div class="content-key-drivers analysis-content hidden">
-                            <div class="space-y-3 pt-1">
-                                <div class="flex justify-between items-center text-sm group">
-                                    <span class="text-slate-400 group-hover:text-white transition-colors">Step 2 Score</span>
-                                    <span class="driver-step2 font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
-                                </div>
-                                <div class="flex justify-between items-center text-sm group">
-                                    <span class="text-slate-400 group-hover:text-white transition-colors">Research</span>
-                                    <span class="driver-research font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
-                                </div>
-                                <div class="flex justify-between items-center text-sm group">
-                                    <span class="text-slate-400 group-hover:text-white transition-colors">LOR/Rank</span>
-                                    <span class="driver-rank font-mono font-bold text-white bg-gray-800 px-2 py-1 rounded border border-gray-700">--</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-auto pt-8 text-[10px] text-slate-500 leading-relaxed text-center opacity-60">
+                    <div class="mt-8 pt-8 text-[10px] text-slate-500 leading-relaxed text-center opacity-60">
                         <i class="fa-solid fa-shield-halved mb-1.5 text-xs"></i><br>
                         Estimates based on historical data. <br>Actual residency outcomes are multifactorial.
                     </div>
